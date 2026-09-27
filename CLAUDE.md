@@ -7,7 +7,7 @@ network resets, Windows Update, winget, Defender) as hidden processes and shows 
 ## Commands
 
 ```powershell
-dotnet test tests/Refreshify.Core.Tests                     # unit tests (Microsoft.Testing.Platform, xUnit v3)
+dotnet test --project tests/Refreshify.Core.Tests           # unit tests (Microsoft.Testing.Platform, xUnit v3)
 dotnet build src/Refreshify -c Release -p:Platform=x64      # WinUI projects need an explicit Platform
 dotnet run --project src/Refreshify -p:Platform=x64
 dotnet format Refreshify.slnx --verify-no-changes           # the CI lint step
@@ -20,7 +20,8 @@ dotnet format Refreshify.slnx --verify-no-changes           # the CI lint step
   and Windows helpers (`Platform/`), known issues and the LLM report (`Diagnostics/`), run engine and history
   (`Engine/`), elevated worker protocol (`Worker/`), PowerShell scripts embedded as resources (`Scripts/`).
 - `src/Refreshify`: WinUI 3 app. `Program.cs` also dispatches `--worker`, `--reminder` and `--uninstall`.
-- `tests/Refreshify.Core.Tests`: unit tests. Tests tagged `Category=System` touch the real system and are excluded in CI.
+- `tests/Refreshify.Core.Tests`: unit tests. None of them change the system, so CI runs them all. Tools that need
+  administrator rights are verified by hand (README, *Verifying the administrator tools*).
 
 ## Rules
 
