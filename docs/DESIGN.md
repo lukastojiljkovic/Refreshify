@@ -252,7 +252,8 @@ continues until the current step finishes.
 
 Off by default. When set to every 1, 2, 3 or 6 months, Refreshify registers a per-user scheduled task that starts
 `Refreshify.exe --reminder` daily. That mode checks the last full refresh and the last reminder. If a reminder is due,
-it shows a Windows notification that opens Refreshify when clicked, then exits.
+it shows a Windows notification that opens Refreshify when clicked, then exits. The click opens `refreshify:`, a
+per-user link that starts Refreshify without arguments. A second start hands over to the open window.
 
 ## Testing
 

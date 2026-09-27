@@ -61,6 +61,14 @@ public sealed partial class MainWindow : Window
         };
     }
 
+    /// <summary>For a second start of Refreshify, such as a click on the reminder.</summary>
+    internal void BringToFront()
+    {
+        if (AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized } presenter)
+            presenter.Restore();
+        Activate();
+    }
+
     internal void ShowStatus(InfoBarSeverity severity, string title, string message)
     {
         StatusBar.Severity = severity;

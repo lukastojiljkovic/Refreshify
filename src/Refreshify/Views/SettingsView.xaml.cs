@@ -38,8 +38,24 @@ public sealed partial class SettingsView : UserControl
 
     private void OnPrivacyToggled(object sender, RoutedEventArgs e) => AppSettings.HidePersonalDetails = PrivacyToggle.IsOn;
 
-    private void OnReminderChanged(object sender, SelectionChangedEventArgs e) =>
-        AppSettings.ReminderMonths = AppSettings.ReminderIntervals[ReminderBox.SelectedIndex];
+    private async void OnReminderChanged(object sender, SelectionChangedEventArgs e)
+    {
+        var months = AppSettings.ReminderIntervals[ReminderBox.SelectedIndex];
+        if (months == AppSettings.ReminderMonths)
+            return;
+
+        ReminderBox.IsEnabled = false;
+        var scheduled = await Reminder.ScheduleAsync(months);
+        ReminderBox.IsEnabled = true;
+        if (scheduled)
+        {
+            AppSettings.ReminderMonths = months;
+            return;
+        }
+
+        ReminderBox.SelectedIndex = Array.IndexOf(AppSettings.ReminderIntervals, AppSettings.ReminderMonths);
+        _window.ShowStatus(InfoBarSeverity.Error, "Couldn't turn on the reminder", "Windows Task Scheduler didn't accept the daily check. Try again later.");
+    }
 
     private void OnThemeChanged(object sender, SelectionChangedEventArgs e)
     {

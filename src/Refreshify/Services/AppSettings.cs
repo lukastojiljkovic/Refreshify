@@ -16,6 +16,9 @@ internal static class AppSettings
     /// <summary>The reminder intervals Settings offers, in months. Zero turns the reminder off.</summary>
     public static readonly int[] ReminderIntervals = [0, 1, 2, 3, 6];
 
+    /// <summary>Deletes every preference, for the uninstaller.</summary>
+    public static void Clear() => Registry.CurrentUser.DeleteSubKeyTree(KeyPath, throwOnMissingSubKey: false);
+
     public static ElementTheme Theme
     {
         get => (ElementTheme)Read(nameof(Theme), (int)ElementTheme.Default) is var theme && Enum.IsDefined(theme) ? theme : ElementTheme.Default;
