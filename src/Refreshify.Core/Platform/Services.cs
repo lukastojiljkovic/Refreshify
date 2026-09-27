@@ -25,7 +25,8 @@ public static class Services
 
     /// <summary>
     /// Stops the service and the services that depend on it, and returns those that were running in the order to start them
-    /// again, so the caller can restore the previous state.
+    /// again, so the caller can restore the previous state. Cancelling only prevents a stop that hasn't begun: one that
+    /// has always finishes and returns, so a cancelled caller still starts the services again.
     /// </summary>
     public static Task<IReadOnlyList<string>> StopAsync(string name, CancellationToken cancellationToken) => Task.Run<IReadOnlyList<string>>(() =>
     {
@@ -42,7 +43,7 @@ public static class Services
 
         if (service.Status != ServiceControllerStatus.StopPending)
             service.Stop();
-        Wait(service, ServiceControllerStatus.Stopped, "stop", cancellationToken);
+        Wait(service, ServiceControllerStatus.Stopped, "stop", CancellationToken.None);
         return running;
     }, cancellationToken);
 

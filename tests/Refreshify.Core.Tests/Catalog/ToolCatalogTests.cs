@@ -44,6 +44,11 @@ public class ToolCatalogTests
         Assert.All(Infos.Where(info => info.Hidden), info => Assert.False(info.IncludedByDefault, info.Id));
 
     [Fact]
+    public void Service_restarts_are_never_interrupted_between_stopping_and_starting() =>
+        Assert.All(ToolCatalog.All.OfType<ServiceRestartTool>(),
+            tool => Assert.True(tool.Info.Has(ToolTraits.NotInterruptible), tool.Info.Id));
+
+    [Fact]
     public void Every_fix_a_known_issue_names_exists() =>
         Assert.All(KnownIssues.All.SelectMany(issue => issue.FixToolIds), id => Assert.NotNull(ToolCatalog.Find(id)));
 

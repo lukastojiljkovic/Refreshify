@@ -96,7 +96,7 @@ you run them when you notice the problem they describe, or add them to *Run all*
 
 ## Verification
 
-- **Unit tests:** `dotnet test --project tests/Refreshify.Core.Tests` runs 196 tests. They cover the tool catalog, the
+- **Unit tests:** `dotnet test --project tests/Refreshify.Core.Tests` runs 197 tests. They cover the tool catalog, the
   parsers for DISM, SFC, chkdsk, winget and Windows Update results, known-problem detection, cleanups on real files
   (age filter, files in use, junctions), the run engine (order, fixes, retries, declined elevation
   and cancellation), the Get help report and its redaction, and the elevated helper's protocol over a real named pipe.
@@ -115,7 +115,8 @@ These tools need your approval in a UAC prompt, which automation can't give, so 
 3. Check that each step ends with a result, and that a step that needs attention explains why and offers a fix or
    **Get help**. **Technical details** show every command and what it printed.
 4. Run each troubleshooting tool once from its **Run** button.
-5. Open **History**: the run is listed with the same results.
+5. Run **Audio services** again and select **Stop** right away: the step still finishes, and sound works afterwards.
+6. Open **History**: the run is listed with the same results.
 
 ## Limitations
 

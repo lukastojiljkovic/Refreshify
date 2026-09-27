@@ -239,7 +239,7 @@ public static class ToolCatalog
         new ServiceRestartTool(
             new("restart-audio", "Audio services", Troubleshooting, "\uE767",
                 "Restarts the Windows audio services.",
-                "Restarts AudioEndpointBuilder and Audiosrv", RunAs.Administrator,
+                "Restarts AudioEndpointBuilder and Audiosrv", RunAs.Administrator, Traits: NotInterruptible,
                 UseWhen: "There's no sound or it crackles, although your speakers and volume are fine."),
             ["AudioEndpointBuilder", "Audiosrv"],
             "The audio services are restarted."),
