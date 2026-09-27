@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Refreshify.Core.Tools;
 
 public enum ToolCategory
@@ -55,6 +57,7 @@ public sealed record ToolOptions(int TempFileAgeHours = 24, string? WindowsImage
     public const int MaxTempFileAgeHours = 720;
 
     /// <summary>Options cross the elevation boundary, so the worker rejects anything out of range.</summary>
+    [JsonIgnore]
     public bool IsValid =>
         TempFileAgeHours is >= 0 and <= MaxTempFileAgeHours &&
         (WindowsImagePath is null ||
