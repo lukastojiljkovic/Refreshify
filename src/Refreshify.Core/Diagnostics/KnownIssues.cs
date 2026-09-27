@@ -63,7 +63,7 @@ public static class KnownIssues
             RemedyKind.Automatic, ["fix-enable-trustedinstaller"], "Turn it on and check again"),
         new(DismSourceUnavailable, "Windows couldn't get its repair files",
             "System image repair needs clean copies of Windows files and couldn't download them from Windows Update. This is common on PCs whose updates are managed by an organization. You can repair from a Windows installation image (ISO) of the same version and language instead.",
-            RemedyKind.WindowsImage, ["dism-restorehealth"], "Choose a Windows image", RetryAfterFix: false),
+            RemedyKind.WindowsImage, ["dism-restorehealth"], "Choose a Windows image"),
         new(WuServiceDisabled, "The Windows Update service is turned off",
             "Windows Update can't run while its service is disabled. Refreshify sets it back to start when needed, as Windows does by default, then tries again.",
             RemedyKind.Automatic, ["fix-enable-wuauserv"], "Turn it on and try again"),
