@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Refreshify.Core/Refreshify.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Refreshify.Core.Tests/Refreshify.Core.Tests.csproj" />
+  </Folder>
+</Solution>
