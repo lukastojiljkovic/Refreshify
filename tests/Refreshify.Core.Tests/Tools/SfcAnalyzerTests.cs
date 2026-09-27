@@ -21,6 +21,13 @@ public sealed class SfcAnalyzerTests : IDisposable
     public void English_console_text_decides_first(string line, SfcVerdict verdict) =>
         Assert.Equal(verdict, SfcAnalyzer.Analyze(["Beginning system scan.  This process will take some time.", line], []));
 
+    [Theory]
+    [InlineData("Verification 42% complete.", 42.0)]
+    [InlineData("Überprüfung zu 42 % abgeschlossen.", 42.0)]
+    [InlineData("Beginning system scan.  This process will take some time.", null)]
+    public void Progress_is_read_in_any_language(string line, double? percent) =>
+        Assert.Equal(percent, SfcAnalyzer.ParseProgress(line));
+
     [Fact]
     public void On_other_languages_unrepairable_files_in_the_cbs_log_decide()
     {

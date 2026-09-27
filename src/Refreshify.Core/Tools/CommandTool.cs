@@ -2,7 +2,8 @@ using Refreshify.Core.Platform;
 
 namespace Refreshify.Core.Tools;
 
-/// <param name="FileName">Full path; environment variables such as <c>%SystemRoot%</c> are expanded when it runs.</param>
+/// <param name="FileName">Full path. Environment variables such as <c>%SystemRoot%</c> here and in
+/// <paramref name="Arguments"/> are expanded when it runs.</param>
 /// <param name="Required">A failing required command stops the tool; a failing optional one only makes it a warning.</param>
 public sealed record Command(string FileName, string Arguments, string Status, bool Required = true);
 
@@ -15,7 +16,8 @@ public sealed class CommandTool(ToolInfo info, IReadOnlyList<Command> commands, 
         foreach (var command in commands)
         {
             context.Status(command.Status);
-            var spec = new ProcessSpec(Environment.ExpandEnvironmentVariables(command.FileName), command.Arguments);
+            var spec = new ProcessSpec(
+                Environment.ExpandEnvironmentVariables(command.FileName), Environment.ExpandEnvironmentVariables(command.Arguments));
             var result = await context.RunAsync(spec, null, cancellationToken);
             if (result.ExitCode == 0)
                 continue;

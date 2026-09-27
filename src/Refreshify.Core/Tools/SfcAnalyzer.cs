@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Text.RegularExpressions;
 using Refreshify.Core.Diagnostics;
 
 namespace Refreshify.Core.Tools;
@@ -17,7 +19,7 @@ public enum SfcVerdict
 /// Judges an SFC run from its English console text, or, on other display languages, from the <c>[SR]</c> lines it wrote to
 /// CBS.log, which is English on every locale.
 /// </summary>
-public static class SfcAnalyzer
+public static partial class SfcAnalyzer
 {
     private const int MaxExcerptLines = 40;
 
@@ -33,6 +35,13 @@ public static class SfcAnalyzer
 
     public static string LogPath { get; } =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), @"Logs\CBS\CBS.log");
+
+    /// <summary>The percentage in SFC's "Verification 42% complete." line, which keeps its number in every language.</summary>
+    public static double? ParseProgress(string line)
+    {
+        var match = ProgressPattern().Match(line);
+        return match.Success ? double.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture) : null;
+    }
 
     public static SfcVerdict Analyze(IReadOnlyList<string> console, IReadOnlyList<string> srLines)
     {
@@ -102,4 +111,7 @@ public static class SfcAnalyzer
         line.Contains("[SR] Could not reproject corrupted file", StringComparison.Ordinal);
 
     private static bool IsRepair(string line) => line.Contains("[SR] Repairing corrupted file", StringComparison.Ordinal);
+
+    [GeneratedRegex(@"\b(\d{1,3})\s?%")]
+    private static partial Regex ProgressPattern();
 }
