@@ -8,7 +8,7 @@ public class CommandToolTests
     private static CancellationToken Ct => TestContext.Current.CancellationToken;
 
     private static readonly ToolInfo NetworkReset = new(
-        "network-reset", "Network stack reset", ToolCategory.Troubleshooting, "", "Resets networking.", "netsh", RunAs.Administrator,
+        "network-reset", "Network stack reset", ToolCategory.Troubleshooting, "", "Resets networking.", "netsh", RunAs.Administrator,
         Traits: ToolTraits.RestartRequired);
 
     /// <summary>Returns the queued exit codes in order and records what was started.</summary>
