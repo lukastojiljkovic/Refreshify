@@ -58,7 +58,8 @@ public sealed class RunEngine(IToolExecutor user, IToolExecutor admin)
         return run with { Steps = session.Steps };
     }
 
-    private static List<Tool> Plan(RunRequest request)
+    /// <summary>The tools a run takes, in order, so the app can confirm them and list them before they start.</summary>
+    public static List<Tool> Plan(RunRequest request)
     {
         var ids = request.ToolIds.ToHashSet(StringComparer.Ordinal);
         var tools = ToolCatalog.All.Where(tool => ids.Contains(tool.Info.Id) && tool.Info.Id != RestorePointId).ToList();

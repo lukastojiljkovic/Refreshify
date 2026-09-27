@@ -83,6 +83,16 @@ public class RunEngineTests
     }
 
     [Fact]
+    public async Task The_plan_lists_the_steps_the_run_takes()
+    {
+        var request = Request("sfc", "temp-files", "no-such-tool") with { CreateRestorePoint = true };
+
+        var run = await RunAsync(new FakeExecutor(), new FakeExecutor(), request);
+
+        Assert.Equal(run.Steps.Select(step => step.ToolId), RunEngine.Plan(request).Select(tool => tool.Info.Id));
+    }
+
+    [Fact]
     public async Task A_run_of_user_tools_needs_no_restore_point()
     {
         var run = await RunAsync(new FakeExecutor(), new FakeExecutor(), Request("temp-files") with { CreateRestorePoint = true });

@@ -244,7 +244,7 @@ public static class ToolCatalog
             ["AudioEndpointBuilder", "Audiosrv"],
             "The audio services are restarted."),
         new ShellRestartTool(
-            new("restart-shell", "Start menu and taskbar", Troubleshooting, "\uE80F",
+            new("restart-shell", "Start menu and taskbar", Troubleshooting, "\uE75B",
                 "Restarts File Explorer, the Start menu and search. Open File Explorer windows close.",
                 "Restart Manager restarts explorer.exe; ends StartMenuExperienceHost, ShellExperienceHost and SearchHost, which Windows starts again",
                 RunAs.User, Traits: RestartsExplorer, UseWhen: "The Start menu, taskbar or search stops responding.")),

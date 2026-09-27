@@ -41,32 +41,8 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItemSeparator />
-                <NavigationViewItem Content="Cleanup" Tag="Cleanup">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xEA99;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="Repair" Tag="Repair">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE90F;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="Network" Tag="Network">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE968;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="Updates &amp; security" Tag="UpdatesAndSecurity">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xEA18;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="Troubleshooting" Tag="Troubleshooting">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xEC7A;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItemSeparator />
+                <!-- The category pages go here, from CategoryInfo.All. -->
+                <NavigationViewItemSeparator x:Name="CategoriesEnd" />
                 <NavigationViewItem x:Name="RunItem" Content="Current run" Tag="Run" Visibility="Collapsed">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE768;" />
@@ -78,6 +54,20 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
             </NavigationView.MenuItems>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <InfoBar x:Name="StatusBar" MaxWidth="936" Margin="32,12,32,0" />
+                <ContentControl
+                    x:Name="PageHost"
+                    Grid.Row="1"
+                    IsTabStop="False"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch" />
+            </Grid>
         </NavigationView>
     </Grid>
 </Window>
