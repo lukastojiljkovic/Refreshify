@@ -80,6 +80,8 @@ public sealed partial class MainWindow : Window
     internal void ShowPage(UIElement page)
     {
         StatusBar.IsOpen = false;
+        // As wide as the page's column: 1400 on Run and History, 1000 elsewhere, less the padding.
+        StatusBar.MaxWidth = page is RunView or HistoryView ? 1336 : 936;
         PageHost.Content = page;
     }
 

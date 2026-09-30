@@ -80,32 +80,35 @@
         </DataTemplate>
     </UserControl.Resources>
 
+    <!-- A column with a MaxWidth sits off-center directly in a ScrollViewer, so a Grid centers it. -->
     <ScrollViewer>
-        <StackPanel MaxWidth="1000" Padding="32,20,32,32" Spacing="4">
-            <Grid Margin="0,0,0,16" ColumnSpacing="24">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <StackPanel Spacing="4">
-                    <TextBlock Text="{x:Bind Category.Name}" Style="{StaticResource TitleTextBlockStyle}" />
-                    <TextBlock Text="{x:Bind Category.Description}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                </StackPanel>
-                <Button
-                    x:Name="RunSelectedButton"
-                    Grid.Column="1"
-                    Content="Run selected"
-                    VerticalAlignment="Bottom"
-                    Style="{StaticResource AccentButtonStyle}"
-                    ToolTipService.ToolTip="Runs the tools on this page that are included in Run all"
-                    Click="OnRunSelectedClick" />
-            </Grid>
+        <Grid>
+            <StackPanel MaxWidth="1000" Padding="32,20,32,32" Spacing="4">
+                <Grid Margin="0,0,0,16" ColumnSpacing="24">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="{x:Bind Category.Name}" Style="{StaticResource TitleTextBlockStyle}" />
+                        <TextBlock Text="{x:Bind Category.Description}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+                    <Button
+                        x:Name="RunSelectedButton"
+                        Grid.Column="1"
+                        Content="Run selected"
+                        VerticalAlignment="Bottom"
+                        Style="{StaticResource AccentButtonStyle}"
+                        ToolTipService.ToolTip="Runs the tools on this page that are included in Run all"
+                        Click="OnRunSelectedClick" />
+                </Grid>
 
-            <ItemsRepeater ItemsSource="{x:Bind Tools}" ItemTemplate="{StaticResource ToolTemplate}">
-                <ItemsRepeater.Layout>
-                    <StackLayout Spacing="4" />
-                </ItemsRepeater.Layout>
-            </ItemsRepeater>
-        </StackPanel>
+                <ItemsRepeater ItemsSource="{x:Bind Tools}" ItemTemplate="{StaticResource ToolTemplate}">
+                    <ItemsRepeater.Layout>
+                        <StackLayout Spacing="4" />
+                    </ItemsRepeater.Layout>
+                </ItemsRepeater>
+            </StackPanel>
+        </Grid>
     </ScrollViewer>
 </UserControl>

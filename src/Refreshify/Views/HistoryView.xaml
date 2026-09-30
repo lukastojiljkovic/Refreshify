@@ -5,47 +5,77 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:models="using:Refreshify.Models">
 
-    <ScrollViewer>
-        <StackPanel MaxWidth="1000" Padding="32,20,32,32" Spacing="4">
-            <TextBlock Text="History" Style="{StaticResource TitleTextBlockStyle}" Margin="0,0,0,16" />
-            <TextBlock
-                x:Name="EmptyText"
-                Text="Runs you start appear here, with their results."
-                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                Visibility="Collapsed" />
+    <UserControl.Resources>
+        <!-- The header and the rows share these columns. -->
+        <GridLength x:Key="StartedColumn">210</GridLength>
+        <GridLength x:Key="DurationColumn">80</GridLength>
+        <GridLength x:Key="FreedColumn">90</GridLength>
+    </UserControl.Resources>
 
-            <ItemsRepeater ItemsSource="{x:Bind Entries}">
-                <ItemsRepeater.Layout>
-                    <StackLayout Spacing="4" />
-                </ItemsRepeater.Layout>
-                <ItemsRepeater.ItemTemplate>
-                    <DataTemplate x:DataType="models:HistoryEntry">
-                        <Button
-                            Style="{StaticResource CardButtonStyle}"
-                            DataContext="{x:Bind}"
-                            AutomationProperties.Name="{x:Bind Label}"
-                            Click="OnEntryClick">
-                            <Grid ColumnSpacing="16">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="20" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <InfoBadge Style="{x:Bind BadgeStyle}" VerticalAlignment="Center" />
-                                <StackPanel Grid.Column="1" Spacing="2">
-                                    <TextBlock Text="{x:Bind Title}" />
-                                    <TextBlock Text="{x:Bind Summary}" Style="{StaticResource SecondaryCaptionStyle}" />
-                                </StackPanel>
-                                <TextBlock
-                                    Grid.Column="2"
-                                    Text="{x:Bind When}"
-                                    VerticalAlignment="Center"
-                                    Style="{StaticResource SecondaryCaptionStyle}" />
-                            </Grid>
-                        </Button>
-                    </DataTemplate>
-                </ItemsRepeater.ItemTemplate>
-            </ItemsRepeater>
-        </StackPanel>
+    <!-- A column with a MaxWidth sits off-center directly in a ScrollViewer, so a Grid centers it. -->
+    <ScrollViewer>
+        <Grid>
+            <StackPanel MaxWidth="1400" Padding="32,20,32,32" Spacing="4">
+                <TextBlock Text="History" Style="{StaticResource TitleTextBlockStyle}" Margin="0,0,0,16" />
+                <TextBlock
+                    x:Name="EmptyText"
+                    Text="Runs you start appear here, with their results."
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Visibility="Collapsed" />
+
+                <Grid x:Name="Header" Padding="17,0,17,4" ColumnSpacing="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="{StaticResource StartedColumn}" />
+                        <ColumnDefinition Width="{StaticResource DurationColumn}" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="{StaticResource FreedColumn}" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="1" Text="Run" Style="{StaticResource SecondaryCaptionStyle}" />
+                    <TextBlock Grid.Column="2" Text="Started" Style="{StaticResource SecondaryCaptionStyle}" />
+                    <TextBlock Grid.Column="3" Text="Duration" Style="{StaticResource SecondaryCaptionStyle}" />
+                    <TextBlock Grid.Column="4" Text="Steps" Style="{StaticResource SecondaryCaptionStyle}" />
+                    <TextBlock Grid.Column="5" Text="Freed" Style="{StaticResource SecondaryCaptionStyle}" HorizontalAlignment="Right" />
+                </Grid>
+
+                <ItemsRepeater ItemsSource="{x:Bind Entries}">
+                    <ItemsRepeater.Layout>
+                        <StackLayout Spacing="4" />
+                    </ItemsRepeater.Layout>
+                    <ItemsRepeater.ItemTemplate>
+                        <DataTemplate x:DataType="models:HistoryEntry">
+                            <Button
+                                Style="{StaticResource CardButtonStyle}"
+                                DataContext="{x:Bind}"
+                                AutomationProperties.Name="{x:Bind Label}"
+                                Click="OnEntryClick">
+                                <Grid ColumnSpacing="16">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="{StaticResource StartedColumn}" />
+                                        <ColumnDefinition Width="{StaticResource DurationColumn}" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="{StaticResource FreedColumn}" />
+                                    </Grid.ColumnDefinitions>
+                                    <InfoBadge
+                                        Width="16"
+                                        Height="16"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Style="{x:Bind BadgeStyle}" />
+                                    <TextBlock Grid.Column="1" Text="{x:Bind Title}" TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Grid.Column="2" Text="{x:Bind When}" Style="{StaticResource SecondaryBodyStyle}" />
+                                    <TextBlock Grid.Column="3" Text="{x:Bind Duration}" Style="{StaticResource SecondaryBodyStyle}" />
+                                    <TextBlock Grid.Column="4" Text="{x:Bind Outcomes}" Style="{StaticResource SecondaryBodyStyle}" />
+                                    <TextBlock Grid.Column="5" Text="{x:Bind Freed}" HorizontalAlignment="Right" />
+                                </Grid>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsRepeater.ItemTemplate>
+                </ItemsRepeater>
+            </StackPanel>
+        </Grid>
     </ScrollViewer>
 </UserControl>

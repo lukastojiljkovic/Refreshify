@@ -43,14 +43,14 @@
                 <NavigationViewItemSeparator />
                 <!-- The category pages go here, from CategoryInfo.All. -->
                 <NavigationViewItemSeparator x:Name="CategoriesEnd" />
-                <NavigationViewItem x:Name="RunItem" Content="Current run" Tag="Run" Visibility="Collapsed">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE768;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
                 <NavigationViewItem Content="History" Tag="History">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE81C;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem x:Name="RunItem" Content="Current run" Tag="Run" Visibility="Collapsed">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE768;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
             </NavigationView.MenuItems>

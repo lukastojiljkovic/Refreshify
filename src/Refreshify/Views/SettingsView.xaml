@@ -5,92 +5,95 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Refreshify.Controls">
 
+    <!-- A column with a MaxWidth sits off-center directly in a ScrollViewer, so a Grid centers it. -->
     <ScrollViewer>
-        <StackPanel MaxWidth="1000" Padding="32,20,32,32" Spacing="4">
-            <TextBlock Text="Settings" Style="{StaticResource TitleTextBlockStyle}" />
+        <Grid>
+            <StackPanel MaxWidth="1000" Padding="32,20,32,32" Spacing="4">
+                <TextBlock Text="Settings" Style="{StaticResource TitleTextBlockStyle}" />
 
-            <TextBlock Text="Running tools" Style="{StaticResource SettingsSectionHeaderStyle}" />
-            <controls:SettingsCard
-                Glyph="&#xE777;"
-                Header="Create a restore point first"
-                Description="Before tools that change Windows run, so you can undo their changes with System Restore">
-                <ToggleSwitch x:Name="RestorePointToggle" Toggled="OnRestorePointToggled" AutomationProperties.Name="Create a restore point first" />
-            </controls:SettingsCard>
-            <controls:SettingsCard
-                Glyph="&#xE90F;"
-                Header="Fix known problems automatically"
-                Description="When a step fails for a reason Refreshify recognizes and can safely fix, it fixes it and tries again. When this is off, it asks first.">
-                <ToggleSwitch x:Name="FixToggle" Toggled="OnFixToggled" AutomationProperties.Name="Fix known problems automatically" />
-            </controls:SettingsCard>
-            <controls:SettingsCard
-                Glyph="&#xE74D;"
-                Header="Temporary files to delete"
-                Description="Apps may still need recent ones. Files that are in use are always skipped.">
-                <ComboBox x:Name="TempAgeBox" MinWidth="200" SelectionChanged="OnTempAgeChanged" AutomationProperties.Name="Temporary files to delete">
-                    <ComboBoxItem Content="Older than a day" />
-                    <ComboBoxItem Content="Older than a week" />
-                    <ComboBoxItem Content="Older than 30 days" />
-                    <ComboBoxItem Content="All of them" />
-                </ComboBox>
-            </controls:SettingsCard>
-            <controls:SettingsCard
-                Glyph="&#xE756;"
-                Header="Show technical details"
-                Description="Show the commands each step runs and what they print">
-                <ToggleSwitch x:Name="TechnicalToggle" Toggled="OnTechnicalToggled" AutomationProperties.Name="Show technical details" />
-            </controls:SettingsCard>
-            <controls:SettingsCard
-                Glyph="&#xE72E;"
-                Header="Hide personal details in reports"
-                Description="Replace your user name, computer name and profile folder with placeholders in Get help reports">
-                <ToggleSwitch x:Name="PrivacyToggle" Toggled="OnPrivacyToggled" AutomationProperties.Name="Hide personal details in reports" />
-            </controls:SettingsCard>
+                <TextBlock Text="Running tools" Style="{StaticResource SettingsSectionHeaderStyle}" />
+                <controls:SettingsCard
+                    Glyph="&#xE777;"
+                    Header="Create a restore point first"
+                    Description="Before tools that change Windows run, so you can undo their changes with System Restore">
+                    <ToggleSwitch x:Name="RestorePointToggle" Toggled="OnRestorePointToggled" AutomationProperties.Name="Create a restore point first" />
+                </controls:SettingsCard>
+                <controls:SettingsCard
+                    Glyph="&#xE90F;"
+                    Header="Fix known problems automatically"
+                    Description="When a step fails for a reason Refreshify recognizes and can safely fix, it fixes it and tries again. When this is off, it asks first.">
+                    <ToggleSwitch x:Name="FixToggle" Toggled="OnFixToggled" AutomationProperties.Name="Fix known problems automatically" />
+                </controls:SettingsCard>
+                <controls:SettingsCard
+                    Glyph="&#xE74D;"
+                    Header="Temporary files to delete"
+                    Description="Apps may still need recent ones. Files that are in use are always skipped.">
+                    <ComboBox x:Name="TempAgeBox" MinWidth="200" SelectionChanged="OnTempAgeChanged" AutomationProperties.Name="Temporary files to delete">
+                        <ComboBoxItem Content="Older than a day" />
+                        <ComboBoxItem Content="Older than a week" />
+                        <ComboBoxItem Content="Older than 30 days" />
+                        <ComboBoxItem Content="All of them" />
+                    </ComboBox>
+                </controls:SettingsCard>
+                <controls:SettingsCard
+                    Glyph="&#xE756;"
+                    Header="Show technical details"
+                    Description="Show the commands each step runs and what they print">
+                    <ToggleSwitch x:Name="TechnicalToggle" Toggled="OnTechnicalToggled" AutomationProperties.Name="Show technical details" />
+                </controls:SettingsCard>
+                <controls:SettingsCard
+                    Glyph="&#xE72E;"
+                    Header="Hide personal details in reports"
+                    Description="Replace your user name, computer name and profile folder with placeholders in Get help reports">
+                    <ToggleSwitch x:Name="PrivacyToggle" Toggled="OnPrivacyToggled" AutomationProperties.Name="Hide personal details in reports" />
+                </controls:SettingsCard>
 
-            <TextBlock Text="Reminder" Style="{StaticResource SettingsSectionHeaderStyle}" />
-            <controls:SettingsCard
-                Glyph="&#xEA8F;"
-                Header="Remind me to refresh"
-                Description="Show a Windows notification when it's been a while since the last Run all">
-                <ComboBox x:Name="ReminderBox" MinWidth="200" SelectionChanged="OnReminderChanged" AutomationProperties.Name="Remind me to refresh">
-                    <ComboBoxItem Content="Never" />
-                    <ComboBoxItem Content="Every month" />
-                    <ComboBoxItem Content="Every 2 months" />
-                    <ComboBoxItem Content="Every 3 months" />
-                    <ComboBoxItem Content="Every 6 months" />
-                </ComboBox>
-            </controls:SettingsCard>
+                <TextBlock Text="Reminder" Style="{StaticResource SettingsSectionHeaderStyle}" />
+                <controls:SettingsCard
+                    Glyph="&#xEA8F;"
+                    Header="Remind me to refresh"
+                    Description="Show a Windows notification when it's been a while since the last Run all">
+                    <ComboBox x:Name="ReminderBox" MinWidth="200" SelectionChanged="OnReminderChanged" AutomationProperties.Name="Remind me to refresh">
+                        <ComboBoxItem Content="Never" />
+                        <ComboBoxItem Content="Every month" />
+                        <ComboBoxItem Content="Every 2 months" />
+                        <ComboBoxItem Content="Every 3 months" />
+                        <ComboBoxItem Content="Every 6 months" />
+                    </ComboBox>
+                </controls:SettingsCard>
 
-            <TextBlock Text="Appearance" Style="{StaticResource SettingsSectionHeaderStyle}" />
-            <controls:SettingsCard Glyph="&#xE790;" Header="App theme" Description="Select which theme Refreshify uses">
-                <ComboBox x:Name="ThemeBox" MinWidth="200" SelectionChanged="OnThemeChanged" AutomationProperties.Name="App theme">
-                    <ComboBoxItem Content="Use system setting" />
-                    <ComboBoxItem Content="Light" />
-                    <ComboBoxItem Content="Dark" />
-                </ComboBox>
-            </controls:SettingsCard>
-            <controls:SettingsCard Glyph="&#xE82F;" Header="Show the welcome screen" Description="Explain what Refreshify does when it starts">
-                <ToggleSwitch x:Name="WelcomeToggle" Toggled="OnWelcomeToggled" AutomationProperties.Name="Show the welcome screen" />
-            </controls:SettingsCard>
+                <TextBlock Text="Appearance" Style="{StaticResource SettingsSectionHeaderStyle}" />
+                <controls:SettingsCard Glyph="&#xE790;" Header="App theme" Description="Select which theme Refreshify uses">
+                    <ComboBox x:Name="ThemeBox" MinWidth="200" SelectionChanged="OnThemeChanged" AutomationProperties.Name="App theme">
+                        <ComboBoxItem Content="Use system setting" />
+                        <ComboBoxItem Content="Light" />
+                        <ComboBoxItem Content="Dark" />
+                    </ComboBox>
+                </controls:SettingsCard>
+                <controls:SettingsCard Glyph="&#xE82F;" Header="Show the welcome screen" Description="Explain what Refreshify does when it starts">
+                    <ToggleSwitch x:Name="WelcomeToggle" Toggled="OnWelcomeToggled" AutomationProperties.Name="Show the welcome screen" />
+                </controls:SettingsCard>
 
-            <TextBlock Text="Data" Style="{StaticResource SettingsSectionHeaderStyle}" />
-            <controls:SettingsCard
-                Glyph="&#xE81C;"
-                Header="History and logs"
-                Description="Refreshify keeps your last 50 runs and their output on this PC">
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <Button Content="Open folder" Click="OnOpenDataClick" />
-                    <Button Content="Clear" Click="OnClearHistoryClick" AutomationProperties.Name="Clear history and logs" />
-                </StackPanel>
-            </controls:SettingsCard>
+                <TextBlock Text="Data" Style="{StaticResource SettingsSectionHeaderStyle}" />
+                <controls:SettingsCard
+                    Glyph="&#xE81C;"
+                    Header="History and logs"
+                    Description="Refreshify keeps your last 50 runs and their output on this PC">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Content="Open folder" Click="OnOpenDataClick" />
+                        <Button Content="Clear" Click="OnClearHistoryClick" AutomationProperties.Name="Clear history and logs" />
+                    </StackPanel>
+                </controls:SettingsCard>
 
-            <TextBlock Text="About" Style="{StaticResource SettingsSectionHeaderStyle}" />
-            <controls:SettingsCard x:Name="AboutCard" Glyph="&#xE946;" Header="Refreshify">
-                <StackPanel Orientation="Horizontal">
-                    <HyperlinkButton Content="Source code" NavigateUri="https://github.com/lukastojiljkovic/Refreshify" />
-                    <HyperlinkButton Content="Terms of Use" NavigateUri="https://github.com/lukastojiljkovic/Refreshify/blob/main/TERMS.md" />
-                    <HyperlinkButton Content="Privacy" NavigateUri="https://github.com/lukastojiljkovic/Refreshify/blob/main/PRIVACY.md" />
-                </StackPanel>
-            </controls:SettingsCard>
-        </StackPanel>
+                <TextBlock Text="About" Style="{StaticResource SettingsSectionHeaderStyle}" />
+                <controls:SettingsCard x:Name="AboutCard" Glyph="&#xE946;" Header="Refreshify">
+                    <StackPanel Orientation="Horizontal">
+                        <HyperlinkButton Content="Source code" NavigateUri="https://github.com/lukastojiljkovic/Refreshify" />
+                        <HyperlinkButton Content="Terms of Use" NavigateUri="https://github.com/lukastojiljkovic/Refreshify/blob/main/TERMS.md" />
+                        <HyperlinkButton Content="Privacy" NavigateUri="https://github.com/lukastojiljkovic/Refreshify/blob/main/PRIVACY.md" />
+                    </StackPanel>
+                </controls:SettingsCard>
+            </StackPanel>
+        </Grid>
     </ScrollViewer>
 </UserControl>

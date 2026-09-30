@@ -29,13 +29,20 @@ public sealed partial class RunView : UserControl
 
     public RunModel Model { get; }
 
-    private static StepItem Step(object sender) => (StepItem)((FrameworkElement)sender).DataContext;
-
     private void OnCancelClick(object sender, RoutedEventArgs e) => _window.Runs.Cancel();
+
+    /// <summary>Also runs when the details follow the running step, which keeps it in view.</summary>
+    private void OnStepSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (StepList.SelectedItem is not StepItem step)
+            return;
+        StepList.ScrollIntoView(step);
+        Model.Pick(step);
+    }
 
     private async void OnFixClick(object sender, RoutedEventArgs e)
     {
-        var step = Step(sender);
+        var step = Model.Selected!;
         var options = AppSettings.ToolOptions;
         if (step.Record.Issue?.Remedy == RemedyKind.WindowsImage)
         {
@@ -47,11 +54,11 @@ public sealed partial class RunView : UserControl
         await _window.Runs.FixAsync(step.Index, options);
     }
 
-    private async void OnRetryClick(object sender, RoutedEventArgs e) => await _window.Runs.FixAsync(Step(sender).Index, AppSettings.ToolOptions);
+    private async void OnRetryClick(object sender, RoutedEventArgs e) => await _window.Runs.FixAsync(Model.Selected!.Index, AppSettings.ToolOptions);
 
     private async void OnRestartClick(object sender, RoutedEventArgs e) => await _window.RestartWindowsAsync();
 
-    private async void OnHelpClick(object sender, RoutedEventArgs e) => await _window.Dialogs.ShowReportAsync(Model.Record, Step(sender).Index);
+    private async void OnHelpClick(object sender, RoutedEventArgs e) => await _window.Dialogs.ShowReportAsync(Model.Record, Model.Selected!.Index);
 
     private void OnBreadcrumbClicked(BreadcrumbBar sender, BreadcrumbBarItemClickedEventArgs args)
     {

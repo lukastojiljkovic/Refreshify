@@ -14,22 +14,11 @@ public sealed class HistoryEntry(RunRecord record)
 
     public string When => RunModel.When(Record.Started);
 
-    public string Summary
-    {
-        get
-        {
-            List<string> parts = [Format.Count(Record.Steps.Count, "step")];
-            if (Record.BytesFreed > 0)
-                parts.Add($"freed {Format.Bytes(Record.BytesFreed)}");
-            if (Count(ToolOutcome.Failed) is > 0 and var failed)
-                parts.Add($"{failed} failed");
-            if (Count(ToolOutcome.Warning) is > 0 and var warnings)
-                parts.Add($"{Format.Count(warnings, "warning")}");
-            if (Record.Cancelled)
-                parts.Add("stopped");
-            return string.Join(" · ", parts);
-        }
-    }
+    public string Duration => Record.Finished is { } finished ? Format.Duration(finished - Record.Started) : "—";
+
+    public string Outcomes => Format.Outcomes(Record.Steps.Select(step => step.Result?.Outcome).OfType<ToolOutcome>());
+
+    public string Freed => Record.BytesFreed > 0 ? Format.Bytes(Record.BytesFreed) : "—";
 
     public Style BadgeStyle => (Style)Application.Current.Resources[
         Record.Cancelled ? "InformationalIconInfoBadgeStyle"
@@ -37,7 +26,7 @@ public sealed class HistoryEntry(RunRecord record)
         : Count(ToolOutcome.Warning) > 0 ? "CautionIconInfoBadgeStyle"
         : "SuccessIconInfoBadgeStyle"];
 
-    public string Label => $"{Title}, {When}";
+    public string Label => $"{Title}, {When}, {Outcomes}";
 
     public override string ToString() => Label;
 

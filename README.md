@@ -31,14 +31,15 @@ Download `Refreshify-<version>-Setup.exe` from the [latest release](https://gith
 ## Features
 
 - **Run all** runs the tools you choose, in an order that avoids known failures. Or run a category, or a single tool.
-- **Plain language.** Every tool says what it does, and troubleshooting tools say when to use them. You see progress
-  and results, never a terminal.
+- **Plain language.** Every tool says what it does, and troubleshooting tools say when to use them. You see what each
+  step is doing, how long it takes and what it found, never a terminal.
 - **Safe by default.** Refreshify lists what a run will do before it starts, and creates a System Restore point first.
 - **Known problems, fixed.** Refreshify recognizes 15 common failures, explains them and fixes the ones it safely can,
   such as a damaged Windows Update cache or a disabled repair service. It asks first before fixes that change more.
 - **Get help** turns a failed step into a report to paste into an AI assistant such as Copilot, ChatGPT or Claude, with
   your user name, computer name and profile folder hidden by default.
-- **History** keeps the results of the last 50 runs, and **technical details** show each command and its output.
+- **History** keeps the results of the last 50 runs, with how long they took and the space they freed, and **technical
+  details** show each command and its output.
 - **A reminder**, if you want one, to refresh your PC every 1, 2, 3 or 6 months.
 
 ![A category page](docs/images/cleanup.png)
@@ -92,11 +93,11 @@ you run them when you notice the problem they describe, or add them to *Run all*
 - **Language-independent detection.** Refreshify recognizes problems from exit codes, error codes, `CBS.log` and
   `DISM /English`, never from console text, so it works the same in every Windows language.
 
-![A finished run](docs/images/run.png)
+![A finished Run all, opened from History](docs/images/run.png)
 
 ## Verification
 
-- **Unit tests:** `dotnet test --project tests/Refreshify.Core.Tests` runs 197 tests. They cover the tool catalog, the
+- **Unit tests:** `dotnet test --project tests/Refreshify.Core.Tests` runs 209 tests. They cover the tool catalog, the
   parsers for DISM, SFC, chkdsk, winget and Windows Update results, known-problem detection, cleanups on real files
   (age filter, files in use, junctions), the run engine (order, fixes, retries, declined elevation
   and cancellation), the Get help report and its redaction, and the elevated helper's protocol over a real named pipe.

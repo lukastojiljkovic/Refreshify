@@ -5,6 +5,25 @@ and versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- The run page shows the steps and one step's details side by side. The details follow the running step, or show the
+  step you select: what it does, what it's doing now, the last lines of its output and how long it took.
+- Live numbers during a run: time elapsed, steps finished, space freed and steps that need attention. Cleanups show how
+  many files and how much space they have deleted so far.
+- History lists each run's duration, how its steps ended and the space it freed.
+
+### Changed
+
+- Run and History use more of a wide window. **Current run** moved below **History** in the navigation.
+
+### Fixed
+
+- Pages sat off-center in wide windows.
+- The result icons in History and on the run page looked stretched.
+- The navigation items overlapped for a moment when **Current run** appeared.
+- A stopped run's summary said that every step finished.
+
 ## [1.0.0] - 2026-09-27
 
 The first release.

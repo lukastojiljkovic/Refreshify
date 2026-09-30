@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml;
+using Refreshify.Core.Catalog;
 using Refreshify.Core.Diagnostics;
 using Refreshify.Core.Engine;
 using Refreshify.Core.Tools;
@@ -9,6 +10,7 @@ namespace Refreshify.Models;
 public sealed class StepItem(RunModel run, int index, StepRecord record) : Observable
 {
     private const int MaxOutputLines = 300;
+    private const int ActivityLines = 6;
 
     private readonly List<string> _output = [];
     private string? _status;
@@ -19,6 +21,8 @@ public sealed class StepItem(RunModel run, int index, StepRecord record) : Obser
     public StepRecord Record { get; private set; } = record;
 
     public string Name => Record.Name;
+
+    public string Description => ToolCatalog.Find(Record.ToolId)?.Info.Description ?? string.Empty;
 
     public bool IsRunning => Record.Status == StepStatus.Running;
 
@@ -32,6 +36,21 @@ public sealed class StepItem(RunModel run, int index, StepRecord record) : Obser
     public double Percent => _percent ?? 0;
 
     public bool IsIndeterminate => _percent is null;
+
+    public string PercentText => _percent is { } percent ? $"{percent:0}%" : string.Empty;
+
+    /// <summary>Counts up while the step runs, then shows how long it took. Runs saved before 1.1 have no times.</summary>
+    public string Time => Record switch
+    {
+        { Status: StepStatus.Running, Started: { } started } => Format.Duration(DateTimeOffset.Now - started),
+        { Status: StepStatus.Done, Started: { } started, Finished: { } finished } => Format.Duration(finished - started),
+        _ => string.Empty,
+    };
+
+    /// <summary>The last lines the step printed, while it runs.</summary>
+    public string Activity => IsRunning ? string.Join('\n', OutputLines.Latest(_output, ActivityLines)) : string.Empty;
+
+    public bool HasActivity => Activity.Length > 0;
 
     /// <summary>The Windows status icons for results that need a color; the others use <see cref="Glyph"/>.</summary>
     public Style? BadgeStyle => Record.Status != StepStatus.Done ? null : Result?.Outcome switch
@@ -122,6 +141,12 @@ public sealed class StepItem(RunModel run, int index, StepRecord record) : Obser
     }
 
     public void Refresh() => Changed(string.Empty);
+
+    public void Tick()
+    {
+        if (IsRunning)
+            Changed(nameof(Time));
+    }
 
     public override string ToString() => Name;
 

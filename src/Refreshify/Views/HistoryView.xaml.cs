@@ -14,6 +14,7 @@ public sealed partial class HistoryView : UserControl
         Entries = [.. window.Runs.History.Load().Select(record => new HistoryEntry(record))];
         InitializeComponent();
         EmptyText.Visibility = Entries.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        Header.Visibility = Entries.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
     }
 
     public IReadOnlyList<HistoryEntry> Entries { get; }

@@ -227,10 +227,19 @@ WinUI 3 with Mica, the WinUI `TitleBar`, and a `NavigationView`:
   description (and "Use it when…" for troubleshooting), badges (restart required, takes a while, restarts File
   Explorer, may close apps), an *Include in Run all* checkbox, **Run** and a details flyout with the commands. Each page
   has **Run selected** for the category.
-- **Run**: the steps with live status and progress, the current step's percentage when the tool reports one, results,
-  **Fix it** / **Get help** per step, **Cancel**, a summary (space freed, repairs, updates) and **Restart now** when a
-  restart is required. The raw output is shown only when "Show technical details" is on.
-- **History**: past runs with their results. Opening one shows the same step view, including **Get help**.
+- **Run**: four numbers at the top (time elapsed, or the run's duration once it ends; steps finished; space freed;
+  steps that need attention), **Cancel** while it runs, and afterwards a summary with **Restart now** when a restart is
+  required. Below, two panes: the steps with their status and how long each took, and the details of the running step,
+  or of the step the user selects. The details show what the tool does, its live status and percentage when it reports
+  one, its last six lines of output while it runs (without the scripts' JSON messages), the known problem and the fixes
+  tried, **Fix it** / **Try again** / **Get help**, and the raw output when "Show technical details" is on. Cleanups
+  count the files and space they have deleted as they go. After a run, the details open on the first step that needs
+  attention.
+- **History**: a table of past runs with their result, start, duration, how the steps ended and the space freed.
+  Opening one shows the same run view, including **Get help**. Runs saved by 1.0 have no step times.
+
+Run and History are up to 1400 px wide, the other pages 1000 px. Both panes fit down to the window's minimum width, so
+the Run page keeps its layout at every size.
 - **Settings**: theme, restore point before running, fix known problems automatically, temporary file age, show
   technical details, hide personal details in reports, reminder, welcome screen, history and logs, About (version,
   MIT license, source, Terms, Privacy).

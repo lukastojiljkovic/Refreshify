@@ -5,41 +5,44 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Refreshify.Controls">
 
+    <!-- A column with a MaxWidth sits off-center directly in a ScrollViewer, so a Grid centers it. -->
     <ScrollViewer>
-        <StackPanel MaxWidth="1000" Padding="32,20,32,32" Spacing="4">
-            <TextBlock Text="Home" Style="{StaticResource TitleTextBlockStyle}" />
+        <Grid>
+            <StackPanel MaxWidth="1000" Padding="32,20,32,32" Spacing="4">
+                <TextBlock Text="Home" Style="{StaticResource TitleTextBlockStyle}" />
 
-            <Grid Margin="0,16,0,0" Padding="24" Style="{StaticResource CardStyle}" ColumnSpacing="24">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Image Source="/Assets/AppIcon.png" Width="64" Height="64" VerticalAlignment="Center" />
-                <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
-                    <TextBlock Text="Give Windows a refresh" Style="{StaticResource SubtitleTextBlockStyle}" />
-                    <TextBlock x:Name="RunAllText" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                </StackPanel>
-                <Button
-                    x:Name="RunAllButton"
-                    Grid.Column="2"
-                    Content="Run all"
-                    MinWidth="120"
-                    Padding="20,8"
-                    VerticalAlignment="Center"
-                    Style="{StaticResource AccentButtonStyle}"
-                    Click="OnRunAllClick" />
-            </Grid>
+                <Grid Margin="0,16,0,0" Padding="24" Style="{StaticResource CardStyle}" ColumnSpacing="24">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Image Source="/Assets/AppIcon.png" Width="64" Height="64" VerticalAlignment="Center" />
+                    <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
+                        <TextBlock Text="Give Windows a refresh" Style="{StaticResource SubtitleTextBlockStyle}" />
+                        <TextBlock x:Name="RunAllText" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+                    <Button
+                        x:Name="RunAllButton"
+                        Grid.Column="2"
+                        Content="Run all"
+                        MinWidth="120"
+                        Padding="20,8"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource AccentButtonStyle}"
+                        Click="OnRunAllClick" />
+                </Grid>
 
-            <TextBlock Text="This PC" Style="{StaticResource SettingsSectionHeaderStyle}" />
-            <controls:SettingsCard x:Name="LastRefreshCard" Glyph="&#xE81C;" Header="Last full refresh" />
-            <controls:SettingsCard x:Name="SpaceCard" Glyph="&#xEDA2;">
-                <ProgressBar x:Name="SpaceBar" Width="160" AutomationProperties.Name="Used space" />
-            </controls:SettingsCard>
-            <controls:SettingsCard x:Name="RestartCard" Glyph="&#xE7E8;" Header="Restart">
-                <Button x:Name="RestartButton" Content="Restart now" Click="OnRestartClick" />
-            </controls:SettingsCard>
-            <controls:SettingsCard x:Name="WindowsCard" Glyph="&#xE7F8;" Header="Windows" />
-        </StackPanel>
+                <TextBlock Text="This PC" Style="{StaticResource SettingsSectionHeaderStyle}" />
+                <controls:SettingsCard x:Name="LastRefreshCard" Glyph="&#xE81C;" Header="Last full refresh" />
+                <controls:SettingsCard x:Name="SpaceCard" Glyph="&#xEDA2;">
+                    <ProgressBar x:Name="SpaceBar" Width="160" AutomationProperties.Name="Used space" />
+                </controls:SettingsCard>
+                <controls:SettingsCard x:Name="RestartCard" Glyph="&#xE7E8;" Header="Restart">
+                    <Button x:Name="RestartButton" Content="Restart now" Click="OnRestartClick" />
+                </controls:SettingsCard>
+                <controls:SettingsCard x:Name="WindowsCard" Glyph="&#xE7F8;" Header="Windows" />
+            </StackPanel>
+        </Grid>
     </ScrollViewer>
 </UserControl>

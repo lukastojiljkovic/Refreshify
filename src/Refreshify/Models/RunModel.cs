@@ -1,4 +1,5 @@
 using System.Globalization;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls;
 using Refreshify.Core.Catalog;
 using Refreshify.Core.Diagnostics;
@@ -14,6 +15,10 @@ public sealed class RunModel : Observable
     private static readonly CultureInfo English = CultureInfo.GetCultureInfo("en-US");
 
     private RunRecord _record;
+    private DispatcherQueueTimer? _clock;
+    private DateTimeOffset _began;
+    private StepItem? _selected;
+    private bool _pinned;
 
     /// <param name="isLive">A run of this session, which can still be cancelled, fixed and retried.</param>
     public RunModel(RunRecord record, bool isLive)
@@ -22,6 +27,7 @@ public sealed class RunModel : Observable
         IsLive = isLive;
         ShowTechnicalDetails = AppSettings.ShowTechnicalDetails;
         Steps = [.. record.Steps.Select((step, index) => new StepItem(this, index, step))];
+        _selected = FirstNeedingAttention ?? Steps.FirstOrDefault();
     }
 
     public string Title => TitleOf(_record);
@@ -33,6 +39,10 @@ public sealed class RunModel : Observable
     public bool ShowTechnicalDetails { get; }
 
     public IReadOnlyList<StepItem> Steps { get; }
+
+    /// <summary>The step whose details are shown: the one picked in the list, or else the running one, and after the run the
+    /// first one that needs attention.</summary>
+    public StepItem? Selected => _selected;
 
     /// <summary>The run with every step as it is now.</summary>
     public RunRecord Record => _record with { Steps = [.. Steps.Select(step => step.Record)] };
@@ -49,6 +59,21 @@ public sealed class RunModel : Observable
             ? $"Step {running.Index + 1} of {Steps.Count}: {running.Name}"
             : "Starting";
 
+    public string ElapsedLabel => IsBusy ? "Elapsed" : "Duration";
+
+    /// <summary>For a <b>Fix it</b>, the time since it started; the run's own duration stays in History.</summary>
+    public string Elapsed => IsBusy
+        ? Format.Duration(DateTimeOffset.Now - _began)
+        : _record.Finished is { } finished ? Format.Duration(finished - _record.Started) : string.Empty;
+
+    /// <summary>Steps that ran to the end, so a stopped run doesn't count the ones it never started.</summary>
+    public string StepsFinished =>
+        $"{Steps.Count(step => step.Record.Status == StepStatus.Done && step.Record.Result?.Outcome != ToolOutcome.Cancelled)} of {Steps.Count}";
+
+    public string Freed => Format.Bytes(Record.BytesFreed);
+
+    public string Attention => NeedingAttention > 0 ? NeedingAttention.ToString(English) : "None";
+
     public double Progress => 100.0 * Steps.Count(step => step.Record.Status == StepStatus.Done) / Math.Max(1, Steps.Count);
 
     public bool ShowSummary => !IsBusy && _record.Finished is not null;
@@ -59,25 +84,23 @@ public sealed class RunModel : Observable
     public string SummaryTitle =>
         _record.Cancelled ? "Stopped" : NeedingAttention > 0 ? "Finished, but some steps need your attention" : "All done";
 
+    /// <summary>The space freed and the steps that need attention are in the numbers above, so this doesn't repeat them.</summary>
     public string SummaryMessage
     {
         get
         {
-            var record = Record;
-            List<string> parts = [];
-            if (record.BytesFreed > 0)
-                parts.Add($"Freed {Format.Bytes(record.BytesFreed)}.");
-            if (NeedingAttention is > 0 and var count)
-                parts.Add($"{Format.Count(count, "step")} {(count == 1 ? "needs" : "need")} your attention.");
-            if (record.RestartRequired)
-                parts.Add("Restart your PC to finish.");
-            return parts.Count > 0 ? string.Join(' ', parts) : "Every step finished.";
+            var message = _record.Cancelled ? "The remaining steps didn't run."
+                : NeedingAttention > 0 ? "Select a marked step to see what happened and what you can do."
+                : "Every step finished.";
+            return Record.RestartRequired ? $"{message} Restart your PC to finish." : message;
         }
     }
 
     public bool RestartRequired => IsLive && Record.RestartRequired;
 
-    private int NeedingAttention => Steps.Count(step => step.Record.Result?.Outcome is ToolOutcome.Failed or ToolOutcome.Warning);
+    private int NeedingAttention => Steps.Count(NeedsAttention);
+
+    private StepItem? FirstNeedingAttention => Steps.FirstOrDefault(NeedsAttention);
 
     public static string TitleOf(RunRecord record) => record.Kind switch
     {
@@ -93,6 +116,15 @@ public sealed class RunModel : Observable
     {
         IsBusy = true;
         IsStopping = false;
+        _began = DateTimeOffset.Now;
+        if (_clock is null)
+        {
+            _clock = DispatcherQueue.GetForCurrentThread().CreateTimer();
+            _clock.Interval = TimeSpan.FromSeconds(1);
+            _clock.Tick += (_, _) => Tick();
+        }
+
+        _clock.Start();
         RefreshAll();
     }
 
@@ -107,18 +139,42 @@ public sealed class RunModel : Observable
         _record = record;
         IsBusy = false;
         IsStopping = false;
+        _clock?.Stop();
         for (var index = 0; index < Steps.Count; index++)
             Steps[index].Update(record.Steps[index]);
+        if (!_pinned)
+            _selected = FirstNeedingAttention ?? _selected;
         RefreshAll();
     }
 
     public void Update(int index, StepRecord step)
     {
         Steps[index].Update(step);
+        if (!_pinned && step.Status == StepStatus.Running)
+            _selected = Steps[index];
         Changed(string.Empty);
     }
 
+    /// <summary>A step picked in the list stays shown; picking the running step follows the run again.</summary>
+    public void Pick(StepItem step)
+    {
+        if (ReferenceEquals(step, _selected))
+            return;
+        _selected = step;
+        _pinned = !step.IsRunning;
+        Changed(nameof(Selected));
+    }
+
     public void Report(int index, ToolEvent toolEvent) => Steps[index].Report(toolEvent);
+
+    private static bool NeedsAttention(StepItem step) => step.Record.Result?.Outcome is ToolOutcome.Failed or ToolOutcome.Warning;
+
+    private void Tick()
+    {
+        Changed(nameof(Elapsed));
+        foreach (var step in Steps)
+            step.Tick();
+    }
 
     private void RefreshAll()
     {
