@@ -22,7 +22,7 @@ public partial class App : Application
         };
     }
 
-    public static string Version { get; } = typeof(App).Assembly.GetName().Version?.ToString(3) ?? "1.0.0";
+    public static string Version { get; } = typeof(App).Assembly.GetName().Version?.ToString(3) ?? "1.1.0";
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
