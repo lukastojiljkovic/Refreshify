@@ -28,8 +28,21 @@ public sealed class FileCleanerTests : IDisposable
         return path;
     }
 
-    private CleanupStats Clean(string pattern = "*", bool recursive = true, TimeSpan? minimumAge = null) =>
-        FileCleaner.Clean(new CleanupTarget(_root.FullName, pattern, recursive, minimumAge is not null), minimumAge ?? TimeSpan.Zero, Ct);
+    private CleanupStats Clean(string pattern = "*", bool recursive = true, TimeSpan? minimumAge = null, Action<long>? deleted = null) =>
+        FileCleaner.Clean(new CleanupTarget(_root.FullName, pattern, recursive, minimumAge is not null), minimumAge ?? TimeSpan.Zero, deleted, Ct);
+
+    [Fact]
+    public void Reports_each_deleted_file_as_it_goes_but_not_skipped_ones()
+    {
+        CreateFile("a.tmp", 10);
+        CreateFile(@"sub\b.tmp", 20);
+        using var locked = new FileStream(CreateFile("locked.tmp", 40), FileMode.Open, FileAccess.Read, FileShare.None);
+        var reported = new List<long>();
+
+        Clean(deleted: reported.Add);
+
+        Assert.Equal([10, 20], reported.Order());
+    }
 
     [Fact]
     public void Deletes_files_older_than_the_minimum_age_and_keeps_newer_ones()
@@ -137,7 +150,7 @@ public sealed class FileCleanerTests : IDisposable
     {
         var path = CreateFile("MEMORY.DMP", 500);
 
-        var stats = FileCleaner.Clean(new CleanupTarget(path), TimeSpan.Zero, Ct);
+        var stats = FileCleaner.Clean(new CleanupTarget(path), TimeSpan.Zero, null, Ct);
 
         Assert.False(File.Exists(path));
         Assert.Equal(500, stats.BytesFreed);
@@ -145,5 +158,5 @@ public sealed class FileCleanerTests : IDisposable
 
     [Fact]
     public void A_missing_target_is_nothing_to_clean() =>
-        Assert.Equal(CleanupStats.Empty, FileCleaner.Clean(new CleanupTarget(Path.Combine(_root.FullName, "missing")), TimeSpan.Zero, Ct));
+        Assert.Equal(CleanupStats.Empty, FileCleaner.Clean(new CleanupTarget(Path.Combine(_root.FullName, "missing")), TimeSpan.Zero, null, Ct));
 }

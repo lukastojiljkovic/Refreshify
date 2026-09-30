@@ -40,6 +40,19 @@ public sealed class CleanupToolTests : IDisposable
     }
 
     [Fact]
+    public async Task Shows_what_it_has_deleted_so_far()
+    {
+        CreateFile("one.tmp", 1024);
+        var statuses = new List<string>();
+        var progress = new SynchronousProgress<ToolEvent>(toolEvent => statuses.Add(toolEvent.Text));
+        var tool = new CleanupTool(TestInfo, () => [new CleanupTarget(_root)]);
+
+        await ToolRunner.RunAsync(tool, new ToolContext(new ToolOptions(), progress, ProcessRunner.Default), Ct);
+
+        Assert.Equal(["Deleting files", "Deleted 1 file (1.0 KB) so far"], statuses);
+    }
+
+    [Fact]
     public async Task Files_in_use_are_mentioned_but_are_not_a_failure()
     {
         CreateFile("free.tmp", 10);

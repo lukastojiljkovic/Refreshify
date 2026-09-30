@@ -18,24 +18,26 @@ public static class FileCleaner
     /// Deletes what <paramref name="target"/> describes. Files in use are skipped and counted, and reparse points
     /// (junctions, symbolic links) are never followed or deleted, so cleanup can't reach outside the target.
     /// </summary>
-    public static CleanupStats Clean(CleanupTarget target, TimeSpan minimumAge, CancellationToken cancellationToken)
+    /// <param name="deleted">Called with the size of each file as it's deleted, for live progress.</param>
+    public static CleanupStats Clean(CleanupTarget target, TimeSpan minimumAge, Action<long>? deleted, CancellationToken cancellationToken)
     {
         var cutoff = target.UseAgeFilter ? DateTime.UtcNow - minimumAge : DateTime.MaxValue;
         if (File.Exists(target.Path))
-            return Delete(new FileInfo(target.Path), cutoff);
+            return Delete(new FileInfo(target.Path), cutoff, deleted);
 
         var directory = new DirectoryInfo(target.Path);
-        return directory.Exists ? CleanDirectory(directory, target, cutoff, cancellationToken) : CleanupStats.Empty;
+        return directory.Exists ? CleanDirectory(directory, target, cutoff, deleted, cancellationToken) : CleanupStats.Empty;
     }
 
-    private static CleanupStats CleanDirectory(DirectoryInfo directory, CleanupTarget target, DateTime cutoff, CancellationToken cancellationToken)
+    private static CleanupStats CleanDirectory(
+        DirectoryInfo directory, CleanupTarget target, DateTime cutoff, Action<long>? deleted, CancellationToken cancellationToken)
     {
         var stats = CleanupStats.Empty;
         foreach (var file in Enumerate(() => directory.EnumerateFiles(target.Pattern)))
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (!file.Attributes.HasFlag(FileAttributes.ReparsePoint))
-                stats += Delete(file, cutoff);
+                stats += Delete(file, cutoff, deleted);
         }
 
         if (!target.Recursive)
@@ -46,14 +48,14 @@ public static class FileCleaner
             if (subdirectory.Attributes.HasFlag(FileAttributes.ReparsePoint))
                 continue;
 
-            stats += CleanDirectory(subdirectory, target, cutoff, cancellationToken);
+            stats += CleanDirectory(subdirectory, target, cutoff, deleted, cancellationToken);
             TryRemoveEmpty(subdirectory, cutoff);
         }
 
         return stats;
     }
 
-    private static CleanupStats Delete(FileInfo file, DateTime cutoff)
+    private static CleanupStats Delete(FileInfo file, DateTime cutoff, Action<long>? deleted)
     {
         try
         {
@@ -64,6 +66,7 @@ public static class FileCleaner
             if (file.IsReadOnly)
                 file.IsReadOnly = false;
             file.Delete();
+            deleted?.Invoke(length);
             return new CleanupStats(length, 1, 0);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)

@@ -76,4 +76,8 @@ public class ToolRunnerTests
     [InlineData("Starting", "Starting", false)]
     public void Progress_updates_are_recognized(string previous, string current, bool expected) =>
         Assert.Equal(expected, OutputLines.IsProgressUpdate(previous, current));
+
+    [Fact]
+    public void The_latest_lines_leave_out_blank_lines_and_script_messages() =>
+        Assert.Equal(["Scanning", "Done"], OutputLines.Latest(["First", "", "Scanning", "@@{\"freed\":1}", "  ", "Done"], 2));
 }

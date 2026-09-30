@@ -94,6 +94,10 @@ public static class OutputLines
     public static bool IsProgressUpdate(string previous, string current) =>
         previous.Contains('%') && current.Contains('%') && StripProgress(previous) == StripProgress(current);
 
+    /// <summary>The last <paramref name="count"/> lines a person can read: no blank lines and no JSON messages from scripts.</summary>
+    public static IReadOnlyList<string> Latest(IEnumerable<string> lines, int count) =>
+        [.. lines.Where(line => !string.IsNullOrWhiteSpace(line) && !PowerShell.IsMessage(line)).TakeLast(count)];
+
     private static string StripProgress(string line) =>
         new(line.Where(c => !char.IsDigit(c) && c is not ('.' or ',' or '=' or ' ')).ToArray());
 }

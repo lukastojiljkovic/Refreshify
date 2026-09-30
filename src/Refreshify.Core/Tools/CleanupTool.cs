@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Refreshify.Core.Diagnostics;
 using Refreshify.Core.Platform;
 
@@ -18,6 +19,9 @@ public sealed class CleanupTool(
     Func<ToolResult?>? precondition = null,
     string? summary = null) : Tool(info)
 {
+    /// <summary>How often the running count is shown: the first file at once, then no more often than this.</summary>
+    private static readonly TimeSpan ReportInterval = TimeSpan.FromMilliseconds(250);
+
     public override async Task<ToolResult> RunAsync(ToolContext context, CancellationToken cancellationToken)
     {
         if (precondition?.Invoke() is { } early)
@@ -34,8 +38,18 @@ public sealed class CleanupTool(
 
             context.Status(Info.Has(ToolTraits.RestartsExplorer) ? "Closing File Explorer and deleting files" : "Deleting files");
             var minimumAge = TimeSpan.FromHours(context.Options.TempFileAgeHours);
+            long files = 0, bytes = 0, reported = 0;
+            void Deleted(long length)
+            {
+                (files, bytes) = (files + 1, bytes + length);
+                if (files > 1 && Stopwatch.GetElapsedTime(reported) < ReportInterval)
+                    return;
+                reported = Stopwatch.GetTimestamp();
+                context.Status($"Deleted {Format.Count(files, "file")} ({Format.Bytes(bytes)}) so far");
+            }
+
             CleanupStats Clean() => targets().Aggregate(CleanupStats.Empty,
-                (total, target) => total + FileCleaner.Clean(target, minimumAge, cancellationToken));
+                (total, target) => total + FileCleaner.Clean(target, minimumAge, Deleted, cancellationToken));
             var stats = await Task.Run(() => Info.Has(ToolTraits.RestartsExplorer) ? ExplorerRestarter.Restart(Clean) : Clean(), cancellationToken);
 
             var result = summary is null ? Summarize(stats) : ToolResult.Succeeded(summary) with { BytesFreed = stats.BytesFreed };

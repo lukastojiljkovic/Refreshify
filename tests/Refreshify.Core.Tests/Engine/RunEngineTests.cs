@@ -47,9 +47,9 @@ public class RunEngineTests
 
         public List<bool> RestorePointPrompts { get; } = [];
 
-        public void StepChanged(int index, StepRecord step)
-        {
-        }
+        public List<StepRecord> Changes { get; } = [];
+
+        public void StepChanged(int index, StepRecord step) => Changes.Add(step);
 
         public void ToolEvent(int index, ToolEvent toolEvent)
         {
@@ -232,6 +232,37 @@ public class RunEngineTests
     }
 
     [Fact]
+    public async Task Steps_record_when_they_started_and_finished_and_not_run_steps_have_no_times()
+    {
+        using var cancellation = CancellationTokenSource.CreateLinkedTokenSource(Ct);
+        var admin = new FakeExecutor { OnRun = _ => cancellation.Cancel() };
+        var observer = new Observer();
+
+        var run = await new RunEngine(new FakeExecutor(), admin).RunAsync(Request("windows-temp", "sfc"), observer, cancellation.Token);
+
+        var running = observer.Changes.First(step => step.Status == StepStatus.Running);
+        Assert.NotNull(running.Started);
+        Assert.Null(running.Finished);
+        var (done, notRun) = (run.Steps[0], run.Steps[1]);
+        Assert.InRange(done.Started!.Value, run.Started, done.Finished!.Value);
+        Assert.InRange(done.Finished.Value, done.Started.Value, run.Finished!.Value);
+        Assert.Equal((null, null), (notRun.Started, notRun.Finished));
+    }
+
+    [Fact]
+    public async Task Fix_it_times_the_step_again()
+    {
+        var admin = new FakeExecutor().Returns("app-updates", Failure(KnownIssues.WingetSources));
+        var engine = new RunEngine(new FakeExecutor(), admin);
+        var run = await engine.RunAsync(Request("app-updates") with { FixAutomatically = false }, new Observer(), Ct);
+        var firstFinished = run.Steps[0].Finished!.Value;
+
+        run = await engine.FixAsync(run, 0, new ToolOptions(), new Observer(), Ct);
+
+        Assert.InRange(run.Steps[0].Started!.Value, firstFinished, run.Steps[0].Finished!.Value);
+    }
+
+    [Fact]
     public async Task Tools_that_must_not_be_interrupted_get_no_cancellation_token()
     {
         var admin = new FakeExecutor();
@@ -265,6 +296,8 @@ public class RunEngineTests
         Assert.Equal([true], observer.RestorePointPrompts);
         Assert.Equal(["restore-point", "fix-enable-system-protection", "restore-point", "sfc"], admin.Calls);
         Assert.Equal("Created a restore point.", run.Steps[0].Result!.Summary);
+        var firstFinished = observer.Changes.First(step => step.Status == StepStatus.Done).Finished!.Value;
+        Assert.InRange(run.Steps[0].Started!.Value, firstFinished, run.Steps[0].Finished!.Value);
     }
 
     [Fact]

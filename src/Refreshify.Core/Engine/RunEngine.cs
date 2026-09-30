@@ -50,11 +50,11 @@ public sealed class RunEngine(IToolExecutor user, IToolExecutor admin)
         var tool = ToolCatalog.Find(step.ToolId) ?? throw new ArgumentException($"There's no tool named {step.ToolId}.", nameof(run));
         var session = new Session(user, admin, [.. run.Steps], options, observer);
 
-        session.Update(index, current => current with { Status = StepStatus.Running });
+        session.Start(index);
         var result = step.CanFix
             ? await session.RemedyAsync(index, tool, step.Result!, step.Issue!, cancellationToken)
             : await session.ExecuteAsync(index, tool, cancellationToken);
-        session.Update(index, current => current with { Status = StepStatus.Done, Result = result });
+        session.Finish(index, result);
         return run with { Steps = session.Steps };
     }
 
@@ -82,10 +82,16 @@ public sealed class RunEngine(IToolExecutor user, IToolExecutor admin)
             observer.StepChanged(index, steps[index]);
         }
 
+        public void Start(int index) =>
+            Update(index, step => step with { Status = StepStatus.Running, Started = DateTimeOffset.Now, Finished = null });
+
+        public void Finish(int index, ToolResult result) =>
+            Update(index, step => step with { Status = StepStatus.Done, Result = result, Finished = DateTimeOffset.Now });
+
         /// <returns>Whether the run goes on.</returns>
         public async Task<bool> RunStepAsync(int index, Tool tool, bool fixAutomatically, CancellationToken cancellationToken)
         {
-            Update(index, step => step with { Status = StepStatus.Running });
+            Start(index);
             var result = await ExecuteAsync(index, tool, cancellationToken);
             if (fixAutomatically && !cancellationToken.IsCancellationRequested &&
                 KnownIssues.Find(result.IssueId) is { Remedy: RemedyKind.Automatic } issue && !issue.FixToolIds.Contains(tool.Info.Id))
@@ -93,7 +99,7 @@ public sealed class RunEngine(IToolExecutor user, IToolExecutor admin)
                 result = await RemedyAsync(index, tool, result, issue, cancellationToken);
             }
 
-            Update(index, step => step with { Status = StepStatus.Done, Result = result });
+            Finish(index, result);
             return tool.Info.Id != RestorePointId || result.Outcome != ToolOutcome.Failed || await DecideRestorePointAsync(index, tool, cancellationToken);
         }
 
@@ -169,9 +175,9 @@ public sealed class RunEngine(IToolExecutor user, IToolExecutor admin)
                 if (choice == RestorePointChoice.Continue || !step.CanFix)
                     return true;
 
-                Update(index, current => current with { Status = StepStatus.Running });
+                Start(index);
                 var result = await RemedyAsync(index, tool, step.Result!, step.Issue!, cancellationToken);
-                Update(index, current => current with { Status = StepStatus.Done, Result = result });
+                Finish(index, result);
                 if (result.Outcome != ToolOutcome.Failed)
                     return true;
             }

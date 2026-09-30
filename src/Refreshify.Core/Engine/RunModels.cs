@@ -31,6 +31,11 @@ public sealed record StepRecord(string ToolId, string Name)
 
     public ToolResult? Result { get; init; }
 
+    /// <summary>When the step last started running, including a <b>Fix it</b> or <b>Try again</b>; absent in runs saved before 1.1.</summary>
+    public DateTimeOffset? Started { get; init; }
+
+    public DateTimeOffset? Finished { get; init; }
+
     /// <summary>What each fix did, for the step view and the LLM report.</summary>
     public IReadOnlyList<string> FixesTried { get; init; } = [];
 

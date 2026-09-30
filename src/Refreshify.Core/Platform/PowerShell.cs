@@ -50,9 +50,11 @@ public static class PowerShell
         };
     }
 
+    public static bool IsMessage(string line) => line.StartsWith(MessagePrefix, StringComparison.Ordinal);
+
     public static IReadOnlyList<JsonElement> Messages(IEnumerable<string> output) =>
         [.. output
-            .Where(line => line.StartsWith(MessagePrefix, StringComparison.Ordinal))
+            .Where(IsMessage)
             .Select(line => JsonDocument.Parse(line[MessagePrefix.Length..]).RootElement.Clone())];
 
     public static ScriptError? Error(IEnumerable<JsonElement> messages) =>
