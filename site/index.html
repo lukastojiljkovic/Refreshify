@@ -19,8 +19,8 @@
 
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
-    <link rel="preload" href="fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="site.css">
+    <link rel="preload" href="fonts/ls-sans.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="site.css?v=2">
     <style>:root { --app: #1a5fbf; --app-dark: #64a6f4; }</style>
 
     <script>
@@ -88,28 +88,26 @@
 
 <main id="main">
     <section class="wrap hero" id="top">
-        <div class="hero-copy">
-            <p class="eyebrow">PC maintenance for <b>Windows 11</b></p>
+        <div class="hero-head">
             <h1>Give Windows a refresh.</h1>
-            <p class="lede">Refreshify cleans up, repairs and updates your PC with the tools Windows already has, in one native app, without a single terminal window.</p>
-            <div class="actions">
-                <a class="btn btn-primary" href="https://github.com/lukastojiljkovic/Refreshify/releases/latest">Download for Windows</a>
-                <a class="btn" href="https://github.com/lukastojiljkovic/Refreshify">View the source</a>
+            <div class="hero-copy">
+                <p class="lede">Refreshify cleans up, repairs and updates your PC with the tools Windows already has, in one native app, without a single terminal window.</p>
+                <div class="actions">
+                    <a class="btn btn-primary" href="https://github.com/lukastojiljkovic/Refreshify/releases/latest">Download for Windows</a>
+                    <a class="btn" href="https://github.com/lukastojiljkovic/Refreshify">View the source</a>
+                </div>
+                <p class="fine">Free and open source (MIT). Windows 11, or Windows 10 1809+, x64.</p>
             </div>
-            <p class="fine">Free and open source (MIT) · Windows 11, or Windows 10 1809+ · x64</p>
         </div>
-        <div class="hero-media">
-            <figure class="frame frame-shot">
-                <div class="frame-bar"><span>Refreshify</span><span>home</span></div>
-                <img src="images/home.png" width="1164" height="792" alt="Refreshify's home page with the Run all button and this PC's free space, restart state and Windows version" fetchpriority="high">
-            </figure>
-            <dl class="frame readout">
-                <div class="row"><dt>Tools</dt><dd>27, in five categories</dd></div>
-                <div class="row"><dt>Run all</dt><dd>16 tools, in a safe order</dd></div>
-                <div class="row"><dt>Safety net</dt><dd>System Restore point first</dd></div>
-                <div class="row"><dt>Data sent</dt><dd><b>None</b></dd></div>
-            </dl>
+        <div class="desk desk-hero">
+            <img class="win" src="images/home.png" width="1164" height="792" alt="Refreshify's home page with the Run all button and this PC's free space, restart state and Windows version" fetchpriority="high">
         </div>
+        <dl class="readout">
+            <div class="row"><dt>Tools</dt><dd>27, in five categories</dd></div>
+            <div class="row"><dt>Run all</dt><dd>16 tools, in a safe order</dd></div>
+            <div class="row"><dt>Safety net</dt><dd>System Restore point first</dd></div>
+            <div class="row"><dt>Data sent</dt><dd><b>None</b></dd></div>
+        </dl>
     </section>
 
     <section class="wrap section" id="features">
@@ -117,44 +115,42 @@
         <p class="section-lede">DISM, SFC, chkdsk, Windows Update, Defender and winget fix most of what slows Windows down, if you know which to run, in which order, and what their output means. Refreshify knows.</p>
         <div class="cells">
             <article class="cell">
-                <p class="cell-n">01</p>
                 <h3>Run all, in a safe order</h3>
                 <p>Cleanup, Repair, Network, and Updates and security, in an order that avoids known failures. Or run one category, or a single tool.</p>
             </article>
             <article class="cell">
-                <p class="cell-n">02</p>
                 <h3>Plain language</h3>
                 <p>Every tool says what it does, and troubleshooting tools say when to use them. You see each step's progress, duration and findings, never a terminal.</p>
             </article>
             <article class="cell">
-                <p class="cell-n">03</p>
                 <h3>A restore point first</h3>
                 <p>Refreshify lists what a run will do before it starts, and creates a System Restore point before anything changes.</p>
             </article>
             <article class="cell">
-                <p class="cell-n">04</p>
                 <h3>Known problems, fixed</h3>
                 <p>Recognizes 15 common failures, such as a damaged Windows Update cache, explains them and fixes the ones it safely can. Bigger fixes ask first.</p>
             </article>
             <article class="cell">
-                <p class="cell-n">05</p>
                 <h3>Get help</h3>
                 <p>Turns a failed step into a report to paste into an AI assistant, with your user name, computer name and profile folder hidden by default.</p>
             </article>
             <article class="cell">
-                <p class="cell-n">06</p>
                 <h3>History and a reminder</h3>
                 <p>The last 50 runs, with how long they took and the space they freed, and an optional reminder every 1, 2, 3 or 6 months.</p>
             </article>
         </div>
         <div class="screens">
             <figure>
-                <img class="frame" src="images/cleanup.png" width="1164" height="792" alt="The Cleanup category page listing its tools with a short explanation of each" loading="lazy">
-                <figcaption><span>Fig. 1</span>Each category explains its tools before you run them.</figcaption>
+                <div class="desk">
+                    <img class="win" src="images/cleanup.png" width="1164" height="792" alt="The Cleanup category page listing its tools with a short explanation of each" loading="lazy">
+                </div>
+                <figcaption>Each category explains its tools before you run them.</figcaption>
             </figure>
             <figure>
-                <img class="frame" src="images/run.png" width="1164" height="792" alt="A finished Run all with each step's result, opened from History" loading="lazy">
-                <figcaption><span>Fig. 2</span>A finished Run all, opened from History, with every step's result.</figcaption>
+                <div class="desk">
+                    <img class="win" src="images/run.png" width="1164" height="792" alt="A finished Run all with each step's result, opened from History" loading="lazy">
+                </div>
+                <figcaption>A finished Run all, opened from History, with every step's result.</figcaption>
             </figure>
         </div>
     </section>
