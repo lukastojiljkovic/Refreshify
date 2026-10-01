@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Refreshify: free Windows 11 cleanup, repair and update tool</title>
+    <meta name="description" content="Refreshify cleans up, repairs and updates Windows with the tools Windows already has: DISM, SFC, chkdsk, Windows Update, Defender and winget, in a safe order, after a restore point. Free and open source.">
+    <meta name="author" content="Luka Stojiljković">
+    <link rel="canonical" href="https://lukastojiljkovic.github.io/Refreshify/">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Refreshify">
+    <meta property="og:title" content="Refreshify: give Windows a refresh">
+    <meta property="og:description" content="Cleans up, repairs and updates your PC with the tools Windows already has, in one native Windows 11 app. Free and open source.">
+    <meta property="og:url" content="https://lukastojiljkovic.github.io/Refreshify/">
+    <meta property="og:image" content="https://lukastojiljkovic.github.io/Refreshify/images/home.png">
+    <meta property="og:image:alt" content="Refreshify's home page">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="preload" href="fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="site.css">
+    <style>:root { --app: #1a5fbf; --app-dark: #64a6f4; }</style>
+
+    <script>
+        // Theme before first paint: the stored choice (shared with the portfolio), else the system setting.
+        try {
+            const t = localStorage.getItem('theme');
+            document.documentElement.dataset.theme = t === 'dark' || t === 'light' ? t
+                : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        } catch (_) {}
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "SoftwareApplication",
+                "name": "Refreshify",
+                "description": "Windows maintenance app that cleans up, repairs and updates a PC with the tools Windows already has (DISM, SFC, chkdsk, Windows Update, Microsoft Defender and winget), in a safe order after a System Restore point, and recognizes and fixes 15 common failures.",
+                "applicationCategory": "UtilitiesApplication",
+                "operatingSystem": "Windows 11, Windows 10 version 1809 or later",
+                "url": "https://lukastojiljkovic.github.io/Refreshify/",
+                "downloadUrl": "https://github.com/lukastojiljkovic/Refreshify/releases/latest",
+                "screenshot": "https://lukastojiljkovic.github.io/Refreshify/images/home.png",
+                "license": "https://github.com/lukastojiljkovic/Refreshify/blob/main/LICENSE",
+                "isAccessibleForFree": true,
+                "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+                "author": { "@type": "Person", "name": "Luka Stojiljković", "url": "https://lukastojiljkovic.github.io/CV/" },
+                "sameAs": ["https://github.com/lukastojiljkovic/Refreshify"]
+            },
+            {
+                "@type": "FAQPage",
+                "mainEntity": [
+                    { "@type": "Question", "name": "Is Refreshify free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Refreshify is free and open source under the MIT License. It has no ads, accounts or telemetry." } },
+                    { "@type": "Question", "name": "Is it safe to run on my PC?", "acceptedAnswer": { "@type": "Answer", "text": "Refreshify only runs maintenance tools that come with Windows, plus winget. It lists what a run will do before it starts and creates a System Restore point first, skipped when one from the last 24 hours exists. A restore point covers system files, settings and programs, not personal files." } },
+                    { "@type": "Question", "name": "Does Refreshify work on Windows 10?", "acceptedAnswer": { "@type": "Answer", "text": "It runs on Windows 10 version 1809 or later, x64, but it has only been tested on Windows 11 25H2." } },
+                    { "@type": "Question", "name": "Why does it ask for administrator approval?", "acceptedAnswer": { "@type": "Answer", "text": "Repair and update tools need administrator rights. Refreshify runs them in an elevated helper that starts the first time one of them runs, so Windows asks once per session." } },
+                    { "@type": "Question", "name": "Does Refreshify collect any data?", "acceptedAnswer": { "@type": "Answer", "text": "No. Refreshify itself doesn't connect to the internet. The Windows tools it runs, such as Windows Update, Microsoft Defender and winget, connect to Microsoft and app publishers as they do when you run them yourself." } },
+                    { "@type": "Question", "name": "Why does Windows SmartScreen warn about the installer?", "acceptedAnswer": { "@type": "Answer", "text": "The installer isn't code-signed yet. Check that its SHA-256 hash matches the one in the release notes, then choose More info and Run anyway." } }
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+    <div class="bar-inner">
+        <a class="mark" href="#top"><img src="icon.png" alt="" width="24" height="24">Refreshify</a>
+        <nav class="nav" aria-label="Sections">
+            <a href="#features">Features</a>
+            <a href="#how">How it works</a>
+            <a href="#limits">Limits</a>
+            <a href="#faq">FAQ</a>
+        </nav>
+        <div class="bar-actions">
+            <button class="theme" id="theme" type="button"><span class="theme-light">Dark</span><span class="theme-dark">Light</span></button>
+            <a class="btn btn-small" href="https://github.com/lukastojiljkovic/Refreshify">GitHub</a>
+            <a class="btn btn-small btn-primary" href="#download">Download</a>
+        </div>
+    </div>
+</header>
+
+<main id="main">
+    <section class="wrap hero" id="top">
+        <div class="hero-copy">
+            <p class="eyebrow">PC maintenance for <b>Windows 11</b></p>
+            <h1>Give Windows a refresh.</h1>
+            <p class="lede">Refreshify cleans up, repairs and updates your PC with the tools Windows already has, in one native app, without a single terminal window.</p>
+            <div class="actions">
+                <a class="btn btn-primary" href="https://github.com/lukastojiljkovic/Refreshify/releases/latest">Download for Windows</a>
+                <a class="btn" href="https://github.com/lukastojiljkovic/Refreshify">View the source</a>
+            </div>
+            <p class="fine">Free and open source (MIT) · Windows 11, or Windows 10 1809+ · x64</p>
+        </div>
+        <div class="hero-media">
+            <figure class="frame frame-shot">
+                <div class="frame-bar"><span>Refreshify</span><span>home</span></div>
+                <img src="images/home.png" width="1164" height="792" alt="Refreshify's home page with the Run all button and this PC's free space, restart state and Windows version" fetchpriority="high">
+            </figure>
+            <dl class="frame readout">
+                <div class="row"><dt>Tools</dt><dd>27, in five categories</dd></div>
+                <div class="row"><dt>Run all</dt><dd>16 tools, in a safe order</dd></div>
+                <div class="row"><dt>Safety net</dt><dd>System Restore point first</dd></div>
+                <div class="row"><dt>Data sent</dt><dd><b>None</b></dd></div>
+            </dl>
+        </div>
+    </section>
+
+    <section class="wrap section" id="features">
+        <h2 class="section-title">What it does</h2>
+        <p class="section-lede">DISM, SFC, chkdsk, Windows Update, Defender and winget fix most of what slows Windows down, if you know which to run, in which order, and what their output means. Refreshify knows.</p>
+        <div class="cells">
+            <article class="cell">
+                <p class="cell-n">01</p>
+                <h3>Run all, in a safe order</h3>
+                <p>Cleanup, Repair, Network, and Updates and security, in an order that avoids known failures. Or run one category, or a single tool.</p>
+            </article>
+            <article class="cell">
+                <p class="cell-n">02</p>
+                <h3>Plain language</h3>
+                <p>Every tool says what it does, and troubleshooting tools say when to use them. You see each step's progress, duration and findings, never a terminal.</p>
+            </article>
+            <article class="cell">
+                <p class="cell-n">03</p>
+                <h3>A restore point first</h3>
+                <p>Refreshify lists what a run will do before it starts, and creates a System Restore point before anything changes.</p>
+            </article>
+            <article class="cell">
+                <p class="cell-n">04</p>
+                <h3>Known problems, fixed</h3>
+                <p>Recognizes 15 common failures, such as a damaged Windows Update cache, explains them and fixes the ones it safely can. Bigger fixes ask first.</p>
+            </article>
+            <article class="cell">
+                <p class="cell-n">05</p>
+                <h3>Get help</h3>
+                <p>Turns a failed step into a report to paste into an AI assistant, with your user name, computer name and profile folder hidden by default.</p>
+            </article>
+            <article class="cell">
+                <p class="cell-n">06</p>
+                <h3>History and a reminder</h3>
+                <p>The last 50 runs, with how long they took and the space they freed, and an optional reminder every 1, 2, 3 or 6 months.</p>
+            </article>
+        </div>
+        <div class="screens">
+            <figure>
+                <img class="frame" src="images/cleanup.png" width="1164" height="792" alt="The Cleanup category page listing its tools with a short explanation of each" loading="lazy">
+                <figcaption><span>Fig. 1</span>Each category explains its tools before you run them.</figcaption>
+            </figure>
+            <figure>
+                <img class="frame" src="images/run.png" width="1164" height="792" alt="A finished Run all with each step's result, opened from History" loading="lazy">
+                <figcaption><span>Fig. 2</span>A finished Run all, opened from History, with every step's result.</figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <section class="wrap section" id="how">
+        <h2 class="section-title">How it works</h2>
+        <p class="section-lede">Refreshify runs the tools Windows ships with and reads their results. Cleanups run in Refreshify itself: they skip files in use and never follow junctions or symbolic links.</p>
+        <ol class="steps">
+            <li><div><h3>Hidden processes</h3><p>DISM, SFC, chkdsk, winget, PowerShell cmdlets and the Windows Update Agent API run without windows. Refreshify reads their progress and results and shows them in the app.</p></div></li>
+            <li><div><h3>One approval per session</h3><p>Tools that need administrator rights run in an elevated helper, started the first time one runs, so Windows asks once. The helper only runs tools from Refreshify's catalog, over a named pipe only the two of them can use.</p></div></li>
+            <li><div><h3>A safe order</h3><p>The restore point comes first. Cleanup frees space before DISM and Windows Update need it, Repair fixes the component store before updates use it, and DISM always runs before SFC.</p></div></li>
+            <li><div><h3>Language-independent detection</h3><p>Problems are recognized from exit codes, error codes, <code>CBS.log</code> and <code>DISM /English</code>, never from console text, so detection works the same in every Windows language.</p></div></li>
+        </ol>
+    </section>
+
+    <section class="wrap section" id="limits">
+        <h2 class="section-title">Tested, and honest about limits</h2>
+        <div class="split">
+            <div>
+                <h3>How it's verified</h3>
+                <ul>
+                    <li><b>209 unit tests</b> cover the tool catalog, the parsers for DISM, SFC, chkdsk, winget and Windows Update, known-problem detection, cleanups on real files and the elevated helper's protocol.</li>
+                    <li><b>UI Automation</b> on Windows 11 Pro 25H2 checks every page, a real run, the dialogs, settings, both themes and the uninstaller's cleanup.</li>
+                    <li><b>CI</b> builds the installer, then installs and uninstalls it silently on every push.</li>
+                </ul>
+            </div>
+            <div>
+                <h3>What it can't do</h3>
+                <ul>
+                    <li><b>Fix what Windows can't.</b> Results depend on Windows' own tools and the services they use, such as Windows Update.</li>
+                    <li><b>Managed PCs.</b> System image repair may need a Windows installation image of the same version, which Refreshify lets you choose.</li>
+                    <li><b>Everything at once.</b> Disk problems that need exclusive access are repaired at the next restart, and optional updates are left for Settings.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="wrap section" id="faq">
+        <h2 class="section-title">Questions</h2>
+        <div class="faq">
+            <details><summary>Is Refreshify free?</summary><p>Yes. Refreshify is free and open source under the <a href="https://github.com/lukastojiljkovic/Refreshify/blob/main/LICENSE">MIT License</a>. It has no ads, accounts or telemetry.</p></details>
+            <details><summary>Is it safe to run on my PC?</summary><p>Refreshify only runs maintenance tools that come with Windows, plus winget. It lists what a run will do before it starts and creates a System Restore point first, skipped when one from the last 24 hours exists. A restore point covers system files, settings and programs, not personal files.</p></details>
+            <details><summary>Does Refreshify work on Windows 10?</summary><p>It runs on Windows 10 version 1809 or later, x64, but it has only been tested on Windows 11 25H2.</p></details>
+            <details><summary>Why does it ask for administrator approval?</summary><p>Repair and update tools need administrator rights. Refreshify runs them in an elevated helper that starts the first time one of them runs, so Windows asks once per session.</p></details>
+            <details><summary>Does Refreshify collect any data?</summary><p>No. Refreshify itself doesn't connect to the internet. The Windows tools it runs, such as Windows Update, Microsoft Defender and winget, connect to Microsoft and app publishers as they do when you run them yourself. See the <a href="https://github.com/lukastojiljkovic/Refreshify/blob/main/PRIVACY.md">privacy statement</a>.</p></details>
+            <details><summary>Why does Windows SmartScreen warn about the installer?</summary><p>The installer isn't code-signed yet. Check that its SHA-256 hash matches the one in the <a href="https://github.com/lukastojiljkovic/Refreshify/releases/latest">release notes</a> (<code>Get-FileHash</code> in PowerShell), then choose <b>More info</b> and <b>Run anyway</b>.</p></details>
+        </div>
+    </section>
+
+    <section class="wrap get" id="download">
+        <div class="get-copy">
+            <h2>Get Refreshify</h2>
+            <p class="lede">One installer, nothing else to install. Refreshify starts from the Start menu and uninstalls from Settings, Apps, removing its settings, history and reminder.</p>
+            <div class="actions">
+                <a class="btn btn-primary" href="https://github.com/lukastojiljkovic/Refreshify/releases/latest">Download the latest release</a>
+                <a class="btn" href="https://github.com/lukastojiljkovic/Refreshify#readme">Read the docs</a>
+            </div>
+        </div>
+        <dl>
+            <div><dt>Requires</dt><dd>Windows 11, or Windows 10 version 1809 or later, x64</dd></div>
+            <div><dt>Language</dt><dd>English</dd></div>
+            <div><dt>License</dt><dd>MIT, source on GitHub</dd></div>
+            <div><dt>Verify</dt><dd>SHA-256 and build provenance in the release notes</dd></div>
+        </dl>
+    </section>
+</main>
+
+<footer class="wrap">
+    <div class="foot">
+        <span>© 2026 <a href="https://lukastojiljkovic.github.io/CV/">Luka Stojiljković</a></span>
+        <nav aria-label="Legal">
+            <a href="https://github.com/lukastojiljkovic/Refreshify/blob/main/TERMS.md">Terms</a>
+            <a href="https://github.com/lukastojiljkovic/Refreshify/blob/main/PRIVACY.md">Privacy</a>
+            <a href="https://github.com/lukastojiljkovic/Refreshify/blob/main/THIRD-PARTY-NOTICES.md">Third-party notices</a>
+            <a href="https://github.com/lukastojiljkovic/Refreshify/security/policy">Security</a>
+        </nav>
+        <p>Windows is a trademark of the Microsoft group of companies. Refreshify isn't affiliated with or endorsed by Microsoft.</p>
+    </div>
+</footer>
+
+<script>
+    (() => {
+        const root = document.documentElement;
+        const button = document.getElementById('theme');
+        const sync = () => button.setAttribute('aria-label', `Switch to ${root.dataset.theme === 'dark' ? 'light' : 'dark'} theme`);
+        sync();
+        button.addEventListener('click', () => {
+            root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+            try { localStorage.setItem('theme', root.dataset.theme); } catch (_) {}
+            sync();
+        });
+    })();
+</script>
+</body>
+</html>
