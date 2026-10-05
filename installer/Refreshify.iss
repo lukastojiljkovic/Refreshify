@@ -1,7 +1,7 @@
 ; Inno Setup script for Refreshify. Built by build.ps1 from the self-contained publish output.
 
 #ifndef AppVersion
-  #define AppVersion "1.1.0"
+  #define AppVersion "1.2.0"
 #endif
 
 #define AppName "Refreshify"
