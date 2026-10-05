@@ -5,6 +5,8 @@ and versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-05
+
 ### Added
 
 - Refreshify checks GitHub for a newer release when it starts (at most once a day) and from **Settings** > **Updates**,
@@ -50,6 +52,7 @@ The first release.
 - An optional reminder to refresh your PC every 1, 2, 3 or 6 months.
 - Light and dark themes that follow Windows, or a theme you choose.
 
-[Unreleased]: https://github.com/lukastojiljkovic/Refreshify/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/lukastojiljkovic/Refreshify/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/lukastojiljkovic/Refreshify/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/lukastojiljkovic/Refreshify/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/lukastojiljkovic/Refreshify/releases/tag/v1.0.0
