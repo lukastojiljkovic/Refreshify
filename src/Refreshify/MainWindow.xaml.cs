@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.Storage.Pickers;
 using Refreshify.Core.Engine;
 using Refreshify.Core.Tools;
+using Refreshify.Core.Updates;
 using Refreshify.Dialogs;
 using Refreshify.Models;
 using Refreshify.Services;
@@ -18,6 +19,8 @@ namespace Refreshify;
 public sealed partial class MainWindow : Window
 {
     private bool _closeAfterRun;
+    private ReleaseInfo? _availableRelease;
+    private CancellationTokenSource? _updateDownload;
 
     public MainWindow()
     {
@@ -25,6 +28,8 @@ public sealed partial class MainWindow : Window
         Dialogs = new DialogService(Root);
         Runs = new RunCoordinator(Dialogs.RestorePointFailedAsync);
         Runs.Finished += OnRunFinished;
+        Updates = new UpdateCoordinator();
+        Updates.Checked += OnUpdateChecked;
         ConfigureWindow();
         ApplyTheme(AppSettings.Theme);
 
@@ -35,6 +40,8 @@ public sealed partial class MainWindow : Window
 
         Root.Loaded += async (_, _) =>
         {
+            // The check runs in the background; the window is never delayed.
+            _ = Updates.CheckOnStartupAsync();
             if (!AppSettings.ShowWelcome)
                 return;
             var welcome = new WelcomeDialog();
@@ -47,6 +54,8 @@ public sealed partial class MainWindow : Window
     internal DialogService Dialogs { get; }
 
     internal RunCoordinator Runs { get; }
+
+    internal UpdateCoordinator Updates { get; }
 
     private nint WindowHandle => Win32Interop.GetWindowFromWindowId(AppWindow.Id);
 
@@ -74,6 +83,7 @@ public sealed partial class MainWindow : Window
         StatusBar.Severity = severity;
         StatusBar.Title = title;
         StatusBar.Message = message;
+        StatusBar.Content = null;
         StatusBar.IsOpen = true;
     }
 
@@ -101,6 +111,7 @@ public sealed partial class MainWindow : Window
             return;
 
         var run = Runs.RunAsync(request, plan);
+        RefreshUpdateActions();
         ShowRun();
         await run;
     }
@@ -191,8 +202,124 @@ public sealed partial class MainWindow : Window
 
     private void OnRunFinished(object? sender, EventArgs e)
     {
+        RefreshUpdateActions();
         if (_closeAfterRun)
             Close();
+    }
+
+    /// <summary>The startup check's result. Only a newer version opens the bar.</summary>
+    private void OnUpdateChecked(object? sender, UpdateCheckResult result)
+    {
+        if (result is { Status: UpdateCheckStatus.UpdateAvailable, Release: { } release })
+            ShowUpdateAvailable(release);
+    }
+
+    internal void ShowUpdateAvailable(ReleaseInfo release)
+    {
+        _availableRelease = release;
+        UpdateBar.Title = $"Refreshify {release.Version.ToString(3)} is available";
+        UpdateBar.Message = $"You are running Refreshify {Updates.CurrentVersion.ToString(3)}.";
+        UpdateBar.IsOpen = true;
+        RefreshUpdateActions();
+    }
+
+    /// <summary>An update cannot start while a run is in progress.</summary>
+    private void RefreshUpdateActions() =>
+        UpdateInstallButton.IsEnabled = !Runs.IsBusy && _updateDownload is null;
+
+    private void OnUpdateBarClosed(InfoBar sender, object args) => _availableRelease = null;
+
+    private async void OnUpdateNotesClick(object sender, RoutedEventArgs e)
+    {
+        if (_availableRelease is { } release)
+            await UpdatePrompts.ShowReleaseNotesAsync(Dialogs, release);
+    }
+
+    private async void OnUpdateInstallClick(object sender, RoutedEventArgs e)
+    {
+        if (_availableRelease is { } release)
+            await DownloadUpdateAsync(release);
+    }
+
+    /// <summary>
+    /// Downloads the release's installer, verifies it against its checksum,
+    /// then starts it and closes the window. Progress and cancel use the status
+    /// bar, so no modal has to be dismissed when the work finishes.
+    /// </summary>
+    private async Task DownloadUpdateAsync(ReleaseInfo release)
+    {
+        if (Runs.IsBusy)
+        {
+            ShowStatus(InfoBarSeverity.Warning, "Refreshify is busy", "Wait for the current run to finish before updating.");
+            return;
+        }
+        if (_updateDownload is not null)
+            return;
+
+        using var cancellation = new CancellationTokenSource();
+        _updateDownload = cancellation;
+        RefreshUpdateActions();
+
+        var progressBar = new ProgressBar { Width = 220, IsIndeterminate = true, VerticalAlignment = VerticalAlignment.Center };
+        var percent = new TextBlock { VerticalAlignment = VerticalAlignment.Center, Text = "0%" };
+        var cancel = new Button { Content = "Cancel" };
+        cancel.Click += (_, _) => cancellation.Cancel();
+        StatusBar.Severity = InfoBarSeverity.Informational;
+        StatusBar.Title = $"Downloading Refreshify {release.Version.ToString(3)}\u2026";
+        StatusBar.Message = "Refreshify verifies the installer before it runs it.";
+        StatusBar.Content = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            Spacing = 12,
+            Children = { progressBar, percent, cancel },
+        };
+        StatusBar.IsOpen = true;
+
+        var progress = new Progress<UpdateProgress>(update =>
+        {
+            if (update.TotalBytes is not > 0)
+                return;
+            progressBar.IsIndeterminate = false;
+            progressBar.Value = Math.Clamp(100.0 * update.BytesReceived / update.TotalBytes.Value, 0, 100);
+            percent.Text = $"{progressBar.Value:0}%";
+        });
+
+        UpdateDownloadResult result;
+        try
+        {
+            result = await Updates.Service.DownloadAsync(release, cancellation.Token, progress);
+        }
+        catch (OperationCanceledException)
+        {
+            ShowStatus(InfoBarSeverity.Informational, "Update cancelled", "Refreshify is unchanged.");
+            return;
+        }
+        finally
+        {
+            _updateDownload = null;
+            StatusBar.Content = null;
+            RefreshUpdateActions();
+        }
+
+        StatusBar.IsOpen = false;
+        if (!result.Success)
+        {
+            await UpdatePrompts.ShowUpdateFailureAsync(Dialogs, result.Error ?? "The installer could not be downloaded.", result.ReleasePageUrl);
+            return;
+        }
+
+        switch (await Updates.Service.InstallAsync(result, CancellationToken.None))
+        {
+            case InstallOutcome.Started:
+                Close();
+                break;
+            case InstallOutcome.Cancelled:
+                ShowStatus(InfoBarSeverity.Informational, "Update cancelled", "Windows did not get permission to run the installer.");
+                break;
+            default:
+                await UpdatePrompts.ShowUpdateFailureAsync(Dialogs, "The installer could not be started.", release.PageUrl);
+                break;
+        }
     }
 
     [LibraryImport("user32.dll")]
