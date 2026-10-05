@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.Win32;
 using Refreshify.Core.Tools;
+using Refreshify.Core.Updates;
 
 namespace Refreshify.Services;
 
@@ -80,7 +81,39 @@ internal static class AppSettings
         set => WriteTime(nameof(LastReminder), value);
     }
 
+    /// <summary>Whether the background update check runs at startup. On by default.</summary>
+    public static bool CheckForUpdatesAutomatically
+    {
+        get => Read(nameof(CheckForUpdatesAutomatically), 1) != 0;
+        set => Write(nameof(CheckForUpdatesAutomatically), value ? 1 : 0);
+    }
+
+    /// <summary>When the update check last reached GitHub; written by the update service, never by the UI.</summary>
+    public static DateTimeOffset? LastUpdateCheckUtc
+    {
+        get => ReadTime(nameof(LastUpdateCheckUtc));
+        set => WriteTime(nameof(LastUpdateCheckUtc), value);
+    }
+
+    /// <summary>The same store, as the update service sees it.</summary>
+    public static IUpdatePreferences UpdatePreferences { get; } = new UpdatePreferencesAdapter();
+
     public static ToolOptions ToolOptions => new(TempFileAgeHours);
+
+    private sealed class UpdatePreferencesAdapter : IUpdatePreferences
+    {
+        public bool CheckForUpdatesAutomatically
+        {
+            get => AppSettings.CheckForUpdatesAutomatically;
+            set => AppSettings.CheckForUpdatesAutomatically = value;
+        }
+
+        public DateTimeOffset? LastUpdateCheckUtc
+        {
+            get => AppSettings.LastUpdateCheckUtc;
+            set => AppSettings.LastUpdateCheckUtc = value;
+        }
+    }
 
     public static bool IsInRunAll(ToolInfo tool)
     {

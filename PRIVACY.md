@@ -1,9 +1,9 @@
 # Refreshify Privacy Statement
 
-Last updated: 27 September 2026
+Last updated: 5 October 2026
 
 Refreshify doesn't collect or send personal data to its author or anyone else. It has no accounts, telemetry,
-analytics, crash reporting or ads.
+analytics, crash reporting or ads. The only request Refreshify makes on its own is the update check described below.
 
 ## What stays on your PC
 
@@ -27,8 +27,7 @@ computer name and profile folder with placeholders.
 
 ## Connections made by the tools Refreshify runs
 
-Refreshify itself doesn't connect to the internet. Some of the Windows tools it runs do, as they do when you run them
-yourself:
+The Windows tools Refreshify runs connect to Microsoft and to app publishers, as they do when you run them yourself:
 
 - **Windows Update** and **System image repair** (DISM) download from Microsoft.
 - **Defender definitions** and the **Defender quick scan** use Microsoft Defender Antivirus, which can send data to
@@ -40,9 +39,19 @@ yourself:
 These connections are governed by the Microsoft Privacy Statement at https://aka.ms/privacy and by the publishers'
 privacy policies.
 
+## Update check
+
+When Refreshify starts, and when you press **Check now** in **Settings** > **Updates**, it asks GitHub for the latest
+release over HTTPS at `api.github.com/repos/lukastojiljkovic/Refreshify/releases/latest`. The request carries
+Refreshify's version in its User-Agent header; GitHub sees your IP address and the usual connection metadata, and
+GitHub's privacy statement applies. No other data is sent, and nothing about your PC is included. When you choose to
+update, the installer is downloaded from GitHub's release servers, and the SHA-256 checksum published with the release
+is verified before the installer is started. The automatic check runs at most once a day and can be turned off in
+**Settings** > **Updates**.
+
 ## Other
 
-- **Links** to GitHub open in your web browser, where GitHub's privacy statement applies.
+- **Links** to GitHub, and the update check, use HTTPS; GitHub's privacy statement applies to what GitHub receives.
 - **Microsoft components.** The Microsoft Windows App SDK included with Refreshify may collect diagnostic information
   as described in its license terms (in the `licenses` folder) and the Microsoft Privacy Statement at
   https://aka.ms/privacy. Any such data goes to Microsoft, not to Refreshify's author.

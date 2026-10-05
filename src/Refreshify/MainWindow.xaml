@@ -58,12 +58,27 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <InfoBar x:Name="StatusBar" MaxWidth="936" Margin="32,12,32,0" />
+                <InfoBar
+                    x:Name="UpdateBar"
+                    MaxWidth="936"
+                    Margin="32,12,32,0"
+                    Severity="Informational"
+                    IsClosable="True"
+                    CloseButtonClick="OnUpdateBarClosed">
+                    <InfoBar.Content>
+                        <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,6,0,0">
+                            <Button x:Name="UpdateNotesButton" Content="What's new" Click="OnUpdateNotesClick" />
+                            <Button x:Name="UpdateInstallButton" Content="Update" Style="{StaticResource AccentButtonStyle}" Click="OnUpdateInstallClick" />
+                        </StackPanel>
+                    </InfoBar.Content>
+                </InfoBar>
+                <InfoBar x:Name="StatusBar" Grid.Row="1" MaxWidth="936" Margin="32,12,32,0" />
                 <ContentControl
                     x:Name="PageHost"
-                    Grid.Row="1"
+                    Grid.Row="2"
                     IsTabStop="False"
                     HorizontalContentAlignment="Stretch"
                     VerticalContentAlignment="Stretch" />
