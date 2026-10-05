@@ -15,7 +15,10 @@
   <a href="LICENSE"><img src="https://img.shields.io/github/license/lukastojiljkovic/Refreshify" alt="MIT License"></a>
 </p>
 
-![Refreshify's home page](docs/images/home.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/home-dark.png">
+  <img src="docs/images/home-light.png" alt="Refreshify's home page">
+</picture>
 
 ## Download
 
@@ -42,7 +45,10 @@ Download `Refreshify-<version>-Setup.exe` from the [latest release](https://gith
   details** show each command and its output.
 - **A reminder**, if you want one, to refresh your PC every 1, 2, 3 or 6 months.
 
-![A category page](docs/images/cleanup.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/cleanup-dark.png">
+  <img src="docs/images/cleanup-light.png" alt="A category page">
+</picture>
 
 ## Tools
 
@@ -93,7 +99,10 @@ you run them when you notice the problem they describe, or add them to *Run all*
 - **Language-independent detection.** Refreshify recognizes problems from exit codes, error codes, `CBS.log` and
   `DISM /English`, never from console text, so it works the same in every Windows language.
 
-![A finished Run all, opened from History](docs/images/run.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/run-dark.png">
+  <img src="docs/images/run-light.png" alt="A finished Run all, opened from History">
+</picture>
 
 ## Verification
 
