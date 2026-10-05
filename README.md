@@ -168,7 +168,8 @@ docs/DESIGN.md               Design
 ## Legal
 
 - [Terms of Use](TERMS.md), which Setup asks you to accept
-- [Privacy Statement](PRIVACY.md): Refreshify doesn't collect or send personal data
+- [Privacy Statement](PRIVACY.md): Refreshify doesn't collect or send personal data; the only request it makes itself is
+  the update check against GitHub
 - [Third-Party Notices](THIRD-PARTY-NOTICES.md)
 - [Security Policy](SECURITY.md)
 

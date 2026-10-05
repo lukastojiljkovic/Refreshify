@@ -1,6 +1,6 @@
 # Refreshify Terms of Use
 
-Last updated: 27 September 2026
+Last updated: 5 October 2026
 
 These terms apply to the Refreshify application and installer published at
 https://github.com/lukastojiljkovic/Refreshify. Refreshify's source code is licensed under the MIT License (LICENSE).
@@ -71,8 +71,8 @@ Refreshify isn't affiliated with or endorsed by Microsoft. Windows is a trademar
 
 ## 8. Privacy
 
-Refreshify doesn't collect or send personal data. The tools it runs connect to Microsoft and to app publishers as
-described in PRIVACY.md.
+Refreshify doesn't collect or send personal data. The only network request it makes itself is the update check against
+GitHub; the tools it runs connect to Microsoft and to app publishers as described in PRIVACY.md.
 
 ## 9. Changes
 

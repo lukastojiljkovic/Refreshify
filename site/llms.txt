@@ -8,7 +8,7 @@ Key facts:
 - Requires Windows 11, or Windows 10 version 1809 or later, x64. Tested on Windows 11 25H2. English UI; problem detection works in every Windows language.
 - Tools that need administrator rights run in an elevated helper, so Windows asks for approval once per session.
 - "Get help" builds a report about a failed step to paste into an AI assistant, with personal details hidden by default.
-- Collects no data. The Windows tools it runs connect to Microsoft and app publishers as they normally do.
+- Collects no data. Its only network request is a daily update check against GitHub, which can be turned off. The Windows tools it runs connect to Microsoft and app publishers as they normally do.
 - Verified by 209 unit tests, UI Automation on Windows 11 and a silent install and uninstall in CI.
 
 ## Download
