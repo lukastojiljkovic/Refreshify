@@ -5,6 +5,13 @@ and versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-10-07
+
+### Changed
+
+- Nothing in the app. 1.2.1 is the first release that 1.2.0's update check can find, so updating to it shows that
+  the updater works end to end.
+
 ## [1.2.0] - 2026-10-05
 
 ### Added
@@ -52,7 +59,8 @@ The first release.
 - An optional reminder to refresh your PC every 1, 2, 3 or 6 months.
 - Light and dark themes that follow Windows, or a theme you choose.
 
-[Unreleased]: https://github.com/lukastojiljkovic/Refreshify/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/lukastojiljkovic/Refreshify/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/lukastojiljkovic/Refreshify/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/lukastojiljkovic/Refreshify/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/lukastojiljkovic/Refreshify/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/lukastojiljkovic/Refreshify/releases/tag/v1.0.0
