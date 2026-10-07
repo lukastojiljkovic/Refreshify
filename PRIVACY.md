@@ -1,6 +1,6 @@
 # Refreshify Privacy Statement
 
-Last updated: 5 October 2026
+Last updated: 7 October 2026
 
 Refreshify doesn't collect or send personal data to its author or anyone else. It has no accounts, telemetry,
 analytics, crash reporting or ads. The only request Refreshify makes on its own is the update check described below.
@@ -15,6 +15,9 @@ analytics, crash reporting or ads. The only request Refreshify makes on its own 
   Refreshify as a notification sender under `HKEY_CURRENT_USER\Software\Classes\AppUserModelId\LukaStojiljkovic.Refreshify`,
   and adds a `refreshify:` link under `HKEY_CURRENT_USER\Software\Classes\refreshify` that opens Refreshify when you
   click the notification. Turning the reminder off removes the task.
+- **An update download**, only when you choose to update: the installer is saved in
+  `%LOCALAPPDATA%\Refreshify\Updates` until it is run. The next download removes the previous file, and uninstalling
+  Refreshify removes the folder.
 
 Uninstalling Refreshify removes all of the above for the account that runs the uninstaller.
 

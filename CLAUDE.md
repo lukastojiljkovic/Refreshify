@@ -2,7 +2,7 @@
 
 Native Windows 11 maintenance utility (WinUI 3). It runs built-in Windows tools (DISM, SFC, chkdsk, cache cleanup,
 network resets, Windows Update, winget, Defender) as hidden processes and shows everything in the GUI. The design is in
-[docs/DESIGN.md](docs/DESIGN.md).
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Commands
 
