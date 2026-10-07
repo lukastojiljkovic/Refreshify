@@ -162,7 +162,7 @@ src/Refreshify.Core          All logic, no UI: the tool catalog, tools, process 
 src/Refreshify               WinUI 3 app; the same exe hosts the elevated helper (--worker) and the reminder (--reminder)
 tests/Refreshify.Core.Tests  Unit tests (xUnit v3)
 installer/Refreshify.iss     Inno Setup script
-docs/DESIGN.md               Design
+docs/ARCHITECTURE.md         Design and behaviour
 ```
 
 ## Legal
@@ -172,6 +172,11 @@ docs/DESIGN.md               Design
   the update check against GitHub
 - [Third-Party Notices](THIRD-PARTY-NOTICES.md)
 - [Security Policy](SECURITY.md)
+- [Contributing](CONTRIBUTING.md): how to build, test and add a tool
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Support](SUPPORT.md): where to ask
+- [Product](PRODUCT.md): what Refreshify is for and who it is for
+- [Design](DESIGN.md): the visual design system
 
 Windows is a trademark of the Microsoft group of companies. Refreshify isn't affiliated with or endorsed by Microsoft.
 

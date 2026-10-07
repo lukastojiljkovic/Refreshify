@@ -1,4 +1,4 @@
-# Refreshify design
+# Refreshify architecture
 
 Refreshify is a native Windows 11 utility that runs the built-in Windows maintenance tools (DISM, SFC, chkdsk, cache
 cleanup, network resets, Windows Update, winget, Microsoft Defender) in the background and presents everything through
