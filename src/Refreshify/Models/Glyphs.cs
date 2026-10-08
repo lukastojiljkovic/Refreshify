@@ -33,6 +33,10 @@ internal static class Glyphs
 
     public const string Restart = "\uE7E8";
 
+    public const string Folder = "\uE8B7";
+
+    public const string File = "\uE7C3";
+
     public const string HealthGood = "\uE930";
 
     public const string HealthCaution = "\uE7BA";
