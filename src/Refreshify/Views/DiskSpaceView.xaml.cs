@@ -101,18 +101,11 @@ public sealed partial class DiskSpaceView : UserControl
     private void OnOpenInExplorerClick(object sender, RoutedEventArgs e)
     {
         var row = (SpaceRowItem)((FrameworkElement)sender).DataContext;
-        var start = new ProcessStartInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "explorer.exe"));
-        if (row.IsFolder)
-        {
-            start.ArgumentList.Add(row.Path);
-        }
-        else
-        {
-            start.ArgumentList.Add("/select,");
-            start.ArgumentList.Add(row.Path);
-        }
-
-        Process.Start(start)?.Dispose();
+        // Always quoted: Explorer splits its arguments at commas, which a file name may contain. A Windows path can't
+        // contain a quote, so the quotes can't be closed early.
+        var arguments = row.IsFolder ? $"\"{row.Path}\"" : $"/select,\"{row.Path}\"";
+        var explorer = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "explorer.exe");
+        Process.Start(new ProcessStartInfo(explorer, arguments))?.Dispose();
     }
 
     private void Open(SpaceRowItem row)

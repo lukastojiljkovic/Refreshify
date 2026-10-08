@@ -196,6 +196,23 @@ public sealed class SpaceScannerTests
     }
 
     [Fact]
+    public void Folders_deeper_than_the_limit_are_counted_as_unreadable()
+    {
+        var tree = new FakeTree();
+        var path = Root;
+        for (var depth = 1; depth <= SpaceScanner.MaxDepth + 5; depth++)
+        {
+            tree.Folder(path, FolderEntry(path, "d"));
+            path = Path.Combine(path, "d");
+        }
+
+        var scan = Scan(tree);
+
+        Assert.Equal(1, scan.UnreadableFolders);
+        Assert.False(scan.Partial);
+    }
+
+    [Fact]
     public void Cloud_folders_and_files_kept_on_this_pc_are_counted()
     {
         var oneDrive = Path.Combine(Root, "OneDrive");

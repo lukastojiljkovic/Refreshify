@@ -18,6 +18,12 @@ public static class SpaceScanner
     /// <summary>How many unreadable folders are named before the rest are only counted.</summary>
     public const int ReportedUnreadablePaths = 50;
 
+    /// <summary>
+    /// How deep below the scanned path folders are read. The scan recurses once per level and long paths allow
+    /// thousands of levels, so deeper folders are counted as unreadable instead of running out of stack.
+    /// </summary>
+    public const int MaxDepth = 512;
+
     /// <summary>Reads <paramref name="path"/> with <paramref name="walker"/>.</summary>
     /// <param name="progress">Called at most ten times a second with how far the scan has got.</param>
     public static SpaceScan Scan(
@@ -51,15 +57,20 @@ public static class SpaceScanner
         {
             var full = Path.GetFullPath(path);
             Report(force: true);
-            var root = ReadFolder(RootName(full), full, parallelChildren: true);
+            var root = ReadFolder(RootName(full), full, depth: 0);
             return new SpaceScan(root, _unreadable, [.. _unreadablePaths], _onlineOnly, _stopped);
         }
 
-        private SpaceFolder ReadFolder(string name, string path, bool parallelChildren)
+        private SpaceFolder ReadFolder(string name, string path, int depth)
         {
             var folder = new SpaceFolder(name, path);
             if (_stopped)
                 return folder;
+            if (depth > MaxDepth)
+            {
+                CountUnreadable(path);
+                return folder;
+            }
 
             IReadOnlyList<FileSystemEntry> entries;
             try
@@ -121,7 +132,7 @@ public static class SpaceScanner
             long size = fileSize;
             long count = fileCount;
             var nodes = new List<SpaceFolder>(subfolders.Count);
-            foreach (var child in ReadChildren(subfolders, parallelChildren))
+            foreach (var child in ReadChildren(subfolders, depth + 1))
             {
                 nodes.Add(child);
                 size += child.Size;
@@ -141,7 +152,7 @@ public static class SpaceScanner
         /// Reads a folder's subfolders. At the top of a scan they are read in parallel, bounded to the processor
         /// count, because their listings are what a scan spends its time on; below that the scan stays sequential.
         /// </summary>
-        private List<SpaceFolder> ReadChildren(List<FileSystemEntry> folders, bool parallel)
+        private List<SpaceFolder> ReadChildren(List<FileSystemEntry> folders, int depth)
         {
             var nodes = new SpaceFolder?[folders.Count];
             void Read(int index)
@@ -152,11 +163,11 @@ public static class SpaceScanner
                     return;
                 }
 
-                nodes[index] = ReadFolder(folders[index].Name, folders[index].Path, parallelChildren: false);
+                nodes[index] = ReadFolder(folders[index].Name, folders[index].Path, depth);
                 Report();
             }
 
-            if (parallel && folders.Count > 1)
+            if (depth == 1 && folders.Count > 1)
                 Parallel.For(0, folders.Count, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, Read);
             else
                 for (var index = 0; index < folders.Count; index++)
