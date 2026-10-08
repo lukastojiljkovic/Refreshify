@@ -103,7 +103,7 @@
                         Click="OnRunSelectedClick" />
                 </Grid>
 
-                <ItemsRepeater ItemsSource="{x:Bind Tools}" ItemTemplate="{StaticResource ToolTemplate}">
+                <ItemsRepeater x:Name="ToolRepeater" ItemsSource="{x:Bind Tools}" ItemTemplate="{StaticResource ToolTemplate}">
                     <ItemsRepeater.Layout>
                         <StackLayout Spacing="4" />
                     </ItemsRepeater.Layout>
