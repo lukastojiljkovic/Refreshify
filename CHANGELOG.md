@@ -5,6 +5,36 @@ and versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-10-08
+
+Refreshify now tells you how your PC is doing and where its disk space went, and its update notes are written to be
+read.
+
+### Added
+
+- **Health**: a page that checks how your PC is doing and says it in plain words. It looks at the free space on each
+  drive, the health your drives report, how much charge your battery holds, whether a restart is waiting, how long
+  since the last restart, your virus protection, the last Windows update and whether Windows is activated. Each check
+  says what it found and what to do about it, and where Refreshify has a tool for it, a button opens that tool. Home
+  shows a line when something needs attention. Nothing is changed and no administrator approval is needed.
+- **Disk space**: a page that scans your files or a drive and lists the folders and files that take the most space,
+  largest first, each with its size and its share of the folder. Select a folder to go into it, or switch to
+  **Largest files** to see the 100 largest files below where you are. Every row can open its place in File Explorer.
+  Nothing is deleted from this page.
+- A **What's new** dialog written for you: it shows only what changed, grouped **New**, **Improved** and **Fixed**,
+  with the release date and one link to the full notes on GitHub, and it offers **Update now**. The first time you
+  start a new version, Refreshify shows what changed in that version, once, instead of the welcome dialog.
+
+### Changed
+
+- The update notice is worded more plainly, and its buttons no longer sit against its bottom edge.
+- Release notes on GitHub put the changes first, so they are the first thing you see.
+
+### Fixed
+
+- A folder or file whose name contains a comma now opens the right place in File Explorer.
+- A folder more than 512 levels deep is counted as unreadable instead of failing the scan.
+
 ## [1.2.1] - 2026-10-07
 
 ### Changed
@@ -59,7 +89,8 @@ The first release.
 - An optional reminder to refresh your PC every 1, 2, 3 or 6 months.
 - Light and dark themes that follow Windows, or a theme you choose.
 
-[Unreleased]: https://github.com/lukastojiljkovic/Refreshify/compare/v1.2.1...HEAD
+[Unreleased]: https://github.com/lukastojiljkovic/Refreshify/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/lukastojiljkovic/Refreshify/compare/v1.2.1...v2.0.0
 [1.2.1]: https://github.com/lukastojiljkovic/Refreshify/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/lukastojiljkovic/Refreshify/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/lukastojiljkovic/Refreshify/compare/v1.0.0...v1.1.0

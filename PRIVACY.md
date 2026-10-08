@@ -1,6 +1,6 @@
 # Refreshify Privacy Statement
 
-Last updated: 7 October 2026
+Last updated: 8 October 2026
 
 Refreshify doesn't collect or send personal data to its author or anyone else. It has no accounts, telemetry,
 analytics, crash reporting or ads. The only request Refreshify makes on its own is the update check described below.
@@ -20,6 +20,14 @@ analytics, crash reporting or ads. The only request Refreshify makes on its own 
   Refreshify removes the folder.
 
 Uninstalling Refreshify removes all of the above for the account that runs the uninstaller.
+
+## What Refreshify reads on your PC
+
+**Health** reads the state of your PC as it is: the free space on each drive, the health your drives report, battery
+capacity, whether a restart is waiting, how long since the last restart, your virus protection, the date of the last
+Windows update and whether Windows is activated. **Disk space** reads folder listings and file sizes. Both only read
+what they need, change nothing, and send nothing. What they read isn't saved: the Health checks describe the state at
+the moment they run, and Home reuses those results until you check again.
 
 ## Get help reports
 
