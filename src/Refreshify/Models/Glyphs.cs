@@ -32,4 +32,12 @@ internal static class Glyphs
     public const string Time = "\uE823";
 
     public const string Restart = "\uE7E8";
+
+    public const string HealthGood = "\uE930";
+
+    public const string HealthCaution = "\uE7BA";
+
+    public const string HealthProblem = "\uE783";
+
+    public const string HealthUnknown = "\uE897";
 }

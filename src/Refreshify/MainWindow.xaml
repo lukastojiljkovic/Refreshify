@@ -40,6 +40,11 @@
                         <FontIcon Glyph="&#xE80F;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <NavigationViewItem x:Name="HealthItem" Content="Health" Tag="Health">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE95E;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItemSeparator />
                 <!-- The category pages go here, from CategoryInfo.All. -->
                 <NavigationViewItemSeparator x:Name="CategoriesEnd" />

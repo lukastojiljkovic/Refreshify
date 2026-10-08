@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using Refreshify.Core.Catalog;
 using Refreshify.Core.Diagnostics;
 using Refreshify.Core.Engine;
+using Refreshify.Core.Health;
 using Refreshify.Core.Platform;
 using Refreshify.Models;
 using Refreshify.Services;
@@ -40,9 +41,24 @@ public sealed partial class HomeView : UserControl
 
         var system = SystemInfo.Current(App.Version);
         WindowsCard.Description = $"{system.Edition}, version {system.Version}, build {system.Build}";
+
+        // The checks run in the background, so Home never waits for the slow ones.
+        _ = ShowAttentionAsync();
     }
 
     private async void OnRunAllClick(object sender, RoutedEventArgs e) => await _window.StartRunAsync(RunKind.All, _runAll);
 
     private async void OnRestartClick(object sender, RoutedEventArgs e) => await _window.RestartWindowsAsync();
+
+    private void OnSeeHealthClick(object sender, RoutedEventArgs e) => _window.ShowHealth();
+
+    private async Task ShowAttentionAsync()
+    {
+        var count = HealthService.AttentionCount(await _window.Health.LatestAsync());
+        if (count == 0)
+            return;
+
+        AttentionText.Text = count == 1 ? "1 thing needs your attention." : $"{count} things need your attention.";
+        AttentionLine.Visibility = Visibility.Visible;
+    }
 }

@@ -33,6 +33,11 @@
                         Click="OnRunAllClick" />
                 </Grid>
 
+                <StackPanel x:Name="AttentionLine" Orientation="Horizontal" Spacing="4" Margin="4,12,0,0" Visibility="Collapsed">
+                    <TextBlock x:Name="AttentionText" VerticalAlignment="Center" />
+                    <HyperlinkButton Content="See Health" Padding="4,0" VerticalAlignment="Center" Click="OnSeeHealthClick" />
+                </StackPanel>
+
                 <TextBlock Text="This PC" Style="{StaticResource SettingsSectionHeaderStyle}" />
                 <controls:SettingsCard x:Name="LastRefreshCard" Glyph="&#xE81C;" Header="Last full refresh" />
                 <controls:SettingsCard x:Name="SpaceCard" Glyph="&#xEDA2;">
