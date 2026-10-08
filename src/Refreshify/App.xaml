@@ -32,6 +32,23 @@
                 <Setter Property="TextTrimming" Value="CharacterEllipsis" />
             </Style>
 
+            <!-- Health cards. A theme resource in a setter follows the theme, unlike a brush looked up in code. -->
+            <Style x:Key="HealthGoodIconStyle" TargetType="FontIcon">
+                <Setter Property="Foreground" Value="{ThemeResource SystemFillColorSuccessBrush}" />
+            </Style>
+
+            <Style x:Key="HealthCautionIconStyle" TargetType="FontIcon">
+                <Setter Property="Foreground" Value="{ThemeResource SystemFillColorCautionBrush}" />
+            </Style>
+
+            <Style x:Key="HealthCriticalIconStyle" TargetType="FontIcon">
+                <Setter Property="Foreground" Value="{ThemeResource SystemFillColorCriticalBrush}" />
+            </Style>
+
+            <Style x:Key="HealthUnknownIconStyle" TargetType="FontIcon">
+                <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+            </Style>
+
             <Style x:Key="SecondaryBodyStyle" TargetType="TextBlock" BasedOn="{StaticResource BodyTextBlockStyle}">
                 <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
                 <Setter Property="TextWrapping" Value="NoWrap" />

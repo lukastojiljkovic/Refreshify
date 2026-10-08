@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.Storage.Pickers;
 using Refreshify.Core.Engine;
+using Refreshify.Core.Health;
 using Refreshify.Core.Tools;
 using Refreshify.Core.Updates;
 using Refreshify.Dialogs;
@@ -21,6 +22,7 @@ public sealed partial class MainWindow : Window
     private bool _closeAfterRun;
     private ReleaseInfo? _availableRelease;
     private CancellationTokenSource? _updateDownload;
+    private string? _pendingCategoryTool;
 
     public MainWindow()
     {
@@ -68,6 +70,8 @@ public sealed partial class MainWindow : Window
     internal RunCoordinator Runs { get; }
 
     internal UpdateCoordinator Updates { get; }
+
+    internal HealthService Health { get; } = new(SystemHealthReaders.Default);
 
     private nint WindowHandle => Win32Interop.GetWindowFromWindowId(AppWindow.Id);
 
@@ -181,14 +185,50 @@ public sealed partial class MainWindow : Window
         UIElement? page = args.IsSettingsSelected ? new SettingsView(this) : args.SelectedItemContainer?.Tag switch
         {
             "Home" => new HomeView(this),
+            "Health" => new HealthView(this),
             "Run" => new RunView(this, Runs.Current!),
             "Space" => new DiskSpaceView(this),
             "History" => new HistoryView(this),
-            ToolCategory category => new CategoryView(this, CategoryInfo.Get(category)),
+            ToolCategory category => new CategoryView(this, CategoryInfo.Get(category), TakeCategoryTool()),
             _ => null,
         };
         if (page is not null)
             ShowPage(page);
+    }
+
+    /// <summary>Opens the page for a category, with one of its tools in view when the caller names it.</summary>
+    internal void ShowCategory(ToolCategory category, string? toolId)
+    {
+        var item = NavView.MenuItems
+            .OfType<NavigationViewItem>()
+            .FirstOrDefault(entry => entry.Tag is ToolCategory target && target == category);
+        if (item is null)
+            return;
+
+        if (ReferenceEquals(NavView.SelectedItem, item))
+        {
+            // Already there: rebuild the page so the tool is brought into view again.
+            ShowPage(new CategoryView(this, CategoryInfo.Get(category), toolId));
+            return;
+        }
+
+        _pendingCategoryTool = toolId;
+        NavView.SelectedItem = item;
+    }
+
+    internal void ShowHealth()
+    {
+        if (ReferenceEquals(NavView.SelectedItem, HealthItem))
+            ShowPage(new HealthView(this));
+        else
+            NavView.SelectedItem = HealthItem;
+    }
+
+    private string? TakeCategoryTool()
+    {
+        var tool = _pendingCategoryTool;
+        _pendingCategoryTool = null;
+        return tool;
     }
 
     private void OnPaneToggleRequested(TitleBar sender, object args) => NavView.IsPaneOpen = !NavView.IsPaneOpen;

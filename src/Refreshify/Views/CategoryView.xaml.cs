@@ -10,13 +10,16 @@ public sealed partial class CategoryView : UserControl
 {
     private readonly MainWindow _window;
 
-    public CategoryView(MainWindow window, CategoryInfo category)
+    /// <param name="focusToolId">A tool to bring into view, when the page is opened from somewhere that points at one.</param>
+    public CategoryView(MainWindow window, CategoryInfo category, string? focusToolId = null)
     {
         _window = window;
         Category = category;
         Tools = [.. ToolCatalog.All.Where(tool => tool.Info.Category == category.Category && !tool.Info.Hidden).Select(tool => new ToolItem(tool.Info))];
         InitializeComponent();
         UpdateRunSelected();
+        if (focusToolId is not null)
+            FocusTool(focusToolId);
     }
 
     public CategoryInfo Category { get; }
@@ -24,6 +27,16 @@ public sealed partial class CategoryView : UserControl
     public IReadOnlyList<ToolItem> Tools { get; }
 
     private void UpdateRunSelected() => RunSelectedButton.IsEnabled = Tools.Any(tool => tool.IsInRunAll);
+
+    /// <summary>Scrolls to the tool and brings it into view, once the list has laid out.</summary>
+    private void FocusTool(string toolId)
+    {
+        var index = Tools.ToList().FindIndex(tool => tool.Info.Id == toolId);
+        if (index < 0)
+            return;
+
+        ToolRepeater.Loaded += (_, _) => DispatcherQueue.TryEnqueue(() => ToolRepeater.GetOrCreateElement(index)?.StartBringIntoView());
+    }
 
     private void OnIncludeClick(object sender, RoutedEventArgs e)
     {
