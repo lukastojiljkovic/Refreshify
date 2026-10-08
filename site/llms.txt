@@ -1,15 +1,18 @@
 # Refreshify
 
-> Refreshify is a free, open-source (MIT) Windows maintenance app by Luka Stojiljković. It cleans up, repairs and updates a PC with the tools Windows already has (DISM, SFC, chkdsk, Windows Update, Microsoft Defender and winget), in one native Windows 11 app without terminal windows. It creates a System Restore point first, runs tools in an order that avoids known failures, and recognizes and fixes 15 common failures.
+> Refreshify is a free, open-source (MIT) Windows maintenance app by Luka Stojiljković. It cleans up, repairs and updates a PC with the tools Windows already has (DISM, SFC, chkdsk, Windows Update, Microsoft Defender and winget), in one native Windows 11 app without terminal windows. It creates a System Restore point first, runs tools in an order that avoids known failures, recognizes and fixes 15 common failures, checks the PC's health in plain words, and shows where the disk space went.
 
 Key facts:
 
 - 27 tools in five categories: Cleanup, Repair, Network, Updates & security, and Troubleshooting. "Run all" runs 16 of them by default.
 - Requires Windows 11, or Windows 10 version 1809 or later, x64. Tested on Windows 11 25H2. English UI; problem detection works in every Windows language.
 - Tools that need administrator rights run in an elevated helper, so Windows asks for approval once per session.
+- "Health" checks free space, drive health, battery wear, restart state, uptime, virus protection, the last Windows update and activation, says what it found and what to do, and changes nothing.
+- "Disk space" scans a drive or folder and lists the biggest folders and files, largest first, each with its share, and opens a place in File Explorer. Nothing is deleted; links and junctions aren't followed, and cloud files that are only online aren't counted.
+- Update notices and the changelog are written for users, and the app shows what changed in a version after you update.
 - "Get help" builds a report about a failed step to paste into an AI assistant, with personal details hidden by default.
 - Collects no data. Its only network request is a daily update check against GitHub, which can be turned off. The Windows tools it runs connect to Microsoft and app publishers as they normally do.
-- Verified by 209 unit tests, UI Automation on Windows 11 and a silent install and uninstall in CI.
+- Verified by 338 unit tests, UI Automation on Windows 11 and a silent install and uninstall in CI.
 
 ## Download
 

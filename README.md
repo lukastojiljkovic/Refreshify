@@ -39,10 +39,22 @@ Download `Refreshify-<version>-Setup.exe` from the [latest release](https://gith
 - **Safe by default.** Refreshify lists what a run will do before it starts, and creates a System Restore point first.
 - **Known problems, fixed.** Refreshify recognizes 15 common failures, explains them and fixes the ones it safely can,
   such as a damaged Windows Update cache or a disabled repair service. It asks first before fixes that change more.
+- **Health** looks at your PC and says how it is doing, in plain words: free space on each drive, the health your
+  drives report, battery wear, whether a restart is waiting, how long since the last restart, virus protection, the
+  last Windows update and whether Windows is activated. Each check says what it found and what to do, and where
+  Refreshify has a tool for it, a button opens that tool. Home shows a line when something needs attention. Nothing is
+  changed, and it needs no administrator approval.
+- **Disk space** scans your files or a drive and lists the folders and files that take the most space, largest first,
+  each with its size and its share of the folder. Select a folder to go into it, or switch to **Largest files** to see
+  the 100 largest files below where you are. Every row opens its place in File Explorer, and nothing is deleted from
+  this page.
 - **Get help** turns a failed step into a report to paste into an AI assistant such as Copilot, ChatGPT or Claude, with
   your user name, computer name and profile folder hidden by default.
 - **History** keeps the results of the last 50 runs, with how long they took and the space they freed, and **technical
   details** show each command and its output.
+- **Readable updates.** Refreshify checks GitHub for a newer release when it starts, at most once a day, and shows what
+  changed in plain words before you update. It verifies the installer against the SHA-256 checksum published with the
+  release, installs it, and then shows what changed in the new version. The automatic check can be turned off.
 - **A reminder**, if you want one, to refresh your PC every 1, 2, 3 or 6 months.
 
 <picture>
@@ -98,6 +110,10 @@ you run them when you notice the problem they describe, or add them to *Run all*
   because a damaged component store makes them fail, and DISM always runs before SFC.
 - **Language-independent detection.** Refreshify recognizes problems from exit codes, error codes, `CBS.log` and
   `DISM /English`, never from console text, so it works the same in every Windows language.
+- **A read-only look.** **Health** reads the state of your PC as it is: free space, what your drives report, battery,
+  restart state, virus protection, the last update and activation. It changes nothing, needs no administrator
+  approval, and Home and **Health** share the same results until you check again. **Disk space** reads folder listings
+  and file sizes; it doesn't follow junctions and symbolic links, and it deletes nothing.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/run-dark.png">
@@ -106,10 +122,11 @@ you run them when you notice the problem they describe, or add them to *Run all*
 
 ## Verification
 
-- **Unit tests:** `dotnet test --project tests/Refreshify.Core.Tests` runs 209 tests. They cover the tool catalog, the
+- **Unit tests:** `dotnet test --project tests/Refreshify.Core.Tests` runs 338 tests. They cover the tool catalog, the
   parsers for DISM, SFC, chkdsk, winget and Windows Update results, known-problem detection, cleanups on real files
-  (age filter, files in use, junctions), the run engine (order, fixes, retries, declined elevation
-  and cancellation), the Get help report and its redaction, and the elevated helper's protocol over a real named pipe.
+  (age filter, files in use, junctions), the run engine (order, fixes, retries, declined elevation and cancellation),
+  the Get help report and its redaction, the elevated helper's protocol over a real named pipe, the release-notes
+  parser, the **Health** checks and their wording, and the **Disk space** scan.
 - **UI Automation** on Windows 11 Pro 25H2 (build 26200): every page, a real run of a tool that doesn't need
   administrator rights, the dialogs, the Get help report and its clipboard copy, settings that persist across restarts,
   light and dark themes, a second start that brings the first window to the front, the reminder task and notification,
@@ -138,6 +155,14 @@ These tools need your approval in a UAC prompt, which automation can't give, so 
 - Windows Update installs available updates; optional updates and updates that need your input are left for Settings.
 - App updates only covers apps that winget knows, and apps that are open may not update until you close them.
 - The Defender tools are skipped when another antivirus protects your PC.
+- **Health** shows the state of your PC at the moment its checks run, and Home keeps showing the same results until
+  they run again. Open **Health** and select **Check again** for a fresh look. A check that can't read what it needs,
+  or takes too long, says **Couldn't check this right now** instead of guessing.
+- **Disk space** counts the sizes it can read. Folders it can't read, such as protected system folders, are counted as
+  unreadable and listed. Cloud files that are kept on this PC are counted at their full size; files that are only
+  online take no space on this PC, so they aren't counted. Junctions and symbolic links aren't followed, and folders
+  more than 512 levels deep are counted as unreadable. For a whole drive, the page also reports the space Windows says
+  is used that the scan couldn't count, such as other users' files and system files.
 - Refreshify is x64 only and in English. It has been tested on Windows 11 25H2; Windows 10 hasn't been tested.
 - Uninstalling removes the settings, history and reminder of the account that runs the uninstaller.
 
@@ -158,7 +183,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the rules the code follows and how to
 
 ```text
 src/Refreshify.Core          All logic, no UI: the tool catalog, tools, process runner, parsers, run engine, known
-                             problems, Get help report, elevated helper protocol and history
+                             problems, Get help report, Health checks, disk-space scan, release notes, elevated
+                             helper protocol and history
 src/Refreshify               WinUI 3 app; the same exe hosts the elevated helper (--worker) and the reminder (--reminder)
 tests/Refreshify.Core.Tests  Unit tests (xUnit v3)
 installer/Refreshify.iss     Inno Setup script
@@ -169,7 +195,7 @@ docs/ARCHITECTURE.md         Design and behaviour
 
 - [Terms of Use](TERMS.md), which Setup asks you to accept
 - [Privacy Statement](PRIVACY.md): Refreshify doesn't collect or send personal data; the only request it makes itself is
-  the update check against GitHub
+  the update check against GitHub. **Health** and **Disk space** read your PC, and nothing they read leaves it
 - [Third-Party Notices](THIRD-PARTY-NOTICES.md)
 - [Security Policy](SECURITY.md)
 - [Contributing](CONTRIBUTING.md): how to build, test and add a tool

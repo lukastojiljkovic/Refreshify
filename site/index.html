@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Refreshify: free Windows 11 cleanup, repair and update tool</title>
-    <meta name="description" content="Refreshify cleans up, repairs and updates Windows with the tools Windows already has: DISM, SFC, chkdsk, Windows Update, Defender and winget, in a safe order, after a restore point. Free and open source.">
+    <meta name="description" content="Refreshify cleans up, repairs and updates Windows with the tools Windows already has: DISM, SFC, chkdsk, Windows Update, Defender and winget, in a safe order, after a restore point. It also checks your PC's health and shows where your disk space went. Free and open source.">
     <meta name="author" content="Luka Stojiljković">
     <link rel="canonical" href="https://lukastojiljkovic.github.io/Refreshify/">
 
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Refreshify">
     <meta property="og:title" content="Refreshify: give Windows a refresh">
-    <meta property="og:description" content="Cleans up, repairs and updates your PC with the tools Windows already has, in one native Windows 11 app. Free and open source.">
+    <meta property="og:description" content="Cleans up, repairs and updates your PC with the tools Windows already has, in one native Windows 11 app. Also checks your PC's health and shows where your disk space went. Free and open source.">
     <meta property="og:url" content="https://lukastojiljkovic.github.io/Refreshify/">
     <meta property="og:image" content="https://lukastojiljkovic.github.io/Refreshify/images/home-light.png">
     <meta property="og:image:alt" content="Refreshify's home page">
@@ -39,7 +39,7 @@
             {
                 "@type": "SoftwareApplication",
                 "name": "Refreshify",
-                "description": "Windows maintenance app that cleans up, repairs and updates a PC with the tools Windows already has (DISM, SFC, chkdsk, Windows Update, Microsoft Defender and winget), in a safe order after a System Restore point, and recognizes and fixes 15 common failures.",
+                "description": "Windows maintenance app that cleans up, repairs and updates a PC with the tools Windows already has (DISM, SFC, chkdsk, Windows Update, Microsoft Defender and winget), in a safe order after a System Restore point, recognizes and fixes 15 common failures, checks the PC's health, and shows where its disk space went.",
                 "applicationCategory": "UtilitiesApplication",
                 "operatingSystem": "Windows 11, Windows 10 version 1809 or later",
                 "url": "https://lukastojiljkovic.github.io/Refreshify/",
@@ -58,8 +58,11 @@
                     { "@type": "Question", "name": "Is it safe to run on my PC?", "acceptedAnswer": { "@type": "Answer", "text": "Refreshify only runs maintenance tools that come with Windows, plus winget. It lists what a run will do before it starts and creates a System Restore point first, skipped when one from the last 24 hours exists. A restore point covers system files, settings and programs, not personal files." } },
                     { "@type": "Question", "name": "Does Refreshify work on Windows 10?", "acceptedAnswer": { "@type": "Answer", "text": "It runs on Windows 10 version 1809 or later, x64, but it has only been tested on Windows 11 25H2." } },
                     { "@type": "Question", "name": "Why does it ask for administrator approval?", "acceptedAnswer": { "@type": "Answer", "text": "Repair and update tools need administrator rights. Refreshify runs them in an elevated helper that starts the first time one of them runs, so Windows asks once per session." } },
-                    { "@type": "Question", "name": "Does Refreshify collect any data?", "acceptedAnswer": { "@type": "Answer", "text": "No. Refreshify collects nothing. The only request it makes itself is the update check, which asks GitHub for the latest release and sends nothing but its version number. The Windows tools it runs, such as Windows Update, Microsoft Defender and winget, connect to Microsoft and app publishers as they do when you run them yourself." } },
-                    { "@type": "Question", "name": "Why does Windows SmartScreen warn about the installer?", "acceptedAnswer": { "@type": "Answer", "text": "The installer isn't code-signed yet. Check that its SHA-256 hash matches the one in the release notes, then choose More info and Run anyway." } }
+                    { "@type": "Question", "name": "Does Refreshify collect any data?", "acceptedAnswer": { "@type": "Answer", "text": "No. Refreshify collects nothing. The only request it makes itself is the update check, which asks GitHub for the latest release and sends nothing but its version number. The Windows tools it runs, such as Windows Update, Microsoft Defender and winget, connect to Microsoft and app publishers as they do when you run them yourself. See the privacy statement." } },
+                    { "@type": "Question", "name": "Why does Windows SmartScreen warn about the installer?", "acceptedAnswer": { "@type": "Answer", "text": "The installer isn't code-signed yet. Check that its SHA-256 hash matches the one in the release notes (Get-FileHash in PowerShell), then choose More info and Run anyway." } },
+                    { "@type": "Question", "name": "What does the Health page check?", "acceptedAnswer": { "@type": "Answer", "text": "It looks at the free space on each drive, the health your drives report, battery wear, whether a restart is waiting, how long since the last restart, your virus protection, the last Windows update and whether Windows is activated. Each check says what it found and what to do, and where Refreshify has a tool for it, a button opens that tool. Nothing is changed, and Home shows a line when something needs attention." } },
+                    { "@type": "Question", "name": "Can I see where my disk space went?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The Disk space page scans your files or a drive and lists the biggest folders and files, largest first, each with its size and its share of the folder. Open a folder to go into it, switch to the 100 largest files, or open any row in File Explorer. Nothing is deleted from this page. Folders Refreshify can't read, such as protected system folders, count as unreadable, and cloud files that are only online aren't counted." } },
+                    { "@type": "Question", "name": "How will I know what changed in a new version?", "acceptedAnswer": { "@type": "Answer", "text": "Refreshify checks GitHub for a newer release at most once a day. When one is available, What's new shows only the release's changes, grouped New, Improved and Fixed, with the release date and a link to the full notes, and offers Update now. The first time you start a new version, Refreshify shows what changed in it, once. The automatic check can be turned off." } }
                 ]
             }
         ]
@@ -138,12 +141,24 @@
                 <p>Recognizes 15 common failures, such as a damaged Windows Update cache, explains them and fixes the ones it safely can. Bigger fixes ask first.</p>
             </article>
             <article class="cell">
+                <h3>Health checks</h3>
+                <p>Looks at free space, drive health, battery wear, a restart that is waiting, uptime, virus protection, the last Windows update and activation, says what it found and what to do, and opens the tool that helps. Nothing is changed.</p>
+            </article>
+            <article class="cell">
+                <h3>Disk space</h3>
+                <p>Scans your files or a drive and shows the biggest folders and files, largest first, each with its size and share. Open a folder, see the 100 largest files, or open a place in File Explorer. Nothing is deleted.</p>
+            </article>
+            <article class="cell">
                 <h3>Get help</h3>
                 <p>Turns a failed step into a report to paste into an AI assistant, with your user name, computer name and profile folder hidden by default.</p>
             </article>
             <article class="cell">
                 <h3>History and a reminder</h3>
                 <p>The last 50 runs, with how long they took and the space they freed, and an optional reminder every 1, 2, 3 or 6 months.</p>
+            </article>
+            <article class="cell">
+                <h3>Readable updates</h3>
+                <p>Checks GitHub for a newer release at most once a day, shows what changed in plain words, verifies the installer's checksum before installing it, and shows what changed in the new version after you update.</p>
             </article>
         </div>
         <div class="screens">
@@ -172,6 +187,7 @@
             <li><div><h3>One approval per session</h3><p>Tools that need administrator rights run in an elevated helper, started the first time one runs, so Windows asks once. The helper only runs tools from Refreshify's catalog, over a named pipe only the two of them can use.</p></div></li>
             <li><div><h3>A safe order</h3><p>The restore point comes first. Cleanup frees space before DISM and Windows Update need it, Repair fixes the component store before updates use it, and DISM always runs before SFC.</p></div></li>
             <li><div><h3>Language-independent detection</h3><p>Problems are recognized from exit codes, error codes, <code>CBS.log</code> and <code>DISM /English</code>, never from console text, so detection works the same in every Windows language.</p></div></li>
+            <li><div><h3>Read-only where it can</h3><p>Health reads the state of your PC and changes nothing, and Disk space reads folder listings and file sizes. Neither needs administrator approval, and neither sends anything.</p></div></li>
         </ol>
     </section>
 
@@ -181,7 +197,7 @@
             <div>
                 <h3>How it's verified</h3>
                 <ul>
-                    <li><b>209 unit tests</b> cover the tool catalog, the parsers for DISM, SFC, chkdsk, winget and Windows Update, known-problem detection, cleanups on real files and the elevated helper's protocol.</li>
+                    <li><b>338 unit tests</b> cover the tool catalog, the parsers for DISM, SFC, chkdsk, winget and Windows Update, known-problem detection, cleanups on real files, the elevated helper's protocol, the Health checks and the disk-space scan.</li>
                     <li><b>UI Automation</b> on Windows 11 Pro 25H2 checks every page, a real run, the dialogs, settings, both themes and the uninstaller's cleanup.</li>
                     <li><b>CI</b> builds the installer, then installs and uninstalls it silently on every push.</li>
                 </ul>
@@ -192,6 +208,8 @@
                     <li><b>Fix what Windows can't.</b> Results depend on Windows' own tools and the services they use, such as Windows Update.</li>
                     <li><b>Managed PCs.</b> System image repair may need a Windows installation image of the same version, which Refreshify lets you choose.</li>
                     <li><b>Everything at once.</b> Disk problems that need exclusive access are repaired at the next restart, and optional updates are left for Settings.</li>
+                    <li><b>Health is a snapshot.</b> The checks read the state of your PC at the moment they run, and Home shows the same results until you check again from Health.</li>
+                    <li><b>Disk space counts what it can read.</b> Protected folders count as unreadable, links and junctions aren't followed, and cloud files that are only online aren't counted.</li>
                 </ul>
             </div>
         </div>
@@ -206,6 +224,9 @@
             <details><summary>Why does it ask for administrator approval?</summary><p>Repair and update tools need administrator rights. Refreshify runs them in an elevated helper that starts the first time one of them runs, so Windows asks once per session.</p></details>
             <details><summary>Does Refreshify collect any data?</summary><p>No. Refreshify collects nothing. The only request it makes itself is the update check, which asks GitHub for the latest release and sends nothing but its version number. The Windows tools it runs, such as Windows Update, Microsoft Defender and winget, connect to Microsoft and app publishers as they do when you run them yourself. See the <a href="https://github.com/lukastojiljkovic/Refreshify/blob/main/PRIVACY.md">privacy statement</a>.</p></details>
             <details><summary>Why does Windows SmartScreen warn about the installer?</summary><p>The installer isn't code-signed yet. Check that its SHA-256 hash matches the one in the <a href="https://github.com/lukastojiljkovic/Refreshify/releases/latest">release notes</a> (<code>Get-FileHash</code> in PowerShell), then choose <b>More info</b> and <b>Run anyway</b>.</p></details>
+            <details><summary>What does the Health page check?</summary><p>It looks at the free space on each drive, the health your drives report, battery wear, whether a restart is waiting, how long since the last restart, your virus protection, the last Windows update and whether Windows is activated. Each check says what it found and what to do, and where Refreshify has a tool for it, a button opens that tool. Nothing is changed, and Home shows a line when something needs attention.</p></details>
+            <details><summary>Can I see where my disk space went?</summary><p>Yes. The Disk space page scans your files or a drive and lists the biggest folders and files, largest first, each with its size and its share of the folder. Open a folder to go into it, switch to the 100 largest files, or open any row in File Explorer. Nothing is deleted from this page. Folders Refreshify can't read, such as protected system folders, count as unreadable, and cloud files that are only online aren't counted.</p></details>
+            <details><summary>How will I know what changed in a new version?</summary><p>Refreshify checks GitHub for a newer release at most once a day. When one is available, What's new shows only the release's changes, grouped New, Improved and Fixed, with the release date and a link to the full notes, and offers Update now. The first time you start a new version, Refreshify shows what changed in it, once. The automatic check can be turned off.</p></details>
         </div>
     </section>
 </main>

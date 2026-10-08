@@ -78,7 +78,7 @@ Constraints:
   uninstall smoke test.
 - Releases from `.github/workflows/release.yml`: the installer, a `.sha256` checksum file, build provenance
   attestation, and release notes taken from `CHANGELOG.md`.
-- Unit tests in `tests/Refreshify.Core.Tests` (xUnit v3); the README states the suite runs 209 tests.
+- Unit tests in `tests/Refreshify.Core.Tests` (xUnit v3); the README states the suite runs 338 tests.
 - `CHANGELOG.md`, `TERMS.md`, `PRIVACY.md`, `THIRD-PARTY-NOTICES.md` and `SECURITY.md`.
 
 Not on hand: no user metrics, no download counts, no testimonials, no benchmarks, and no independent security audit.
