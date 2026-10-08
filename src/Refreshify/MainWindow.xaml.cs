@@ -40,14 +40,26 @@ public sealed partial class MainWindow : Window
 
         Root.Loaded += async (_, _) =>
         {
+            // Read before the check starts: the check writes LastUpdateCheckUtc.
+            var previous = AppSettings.LastRunVersion;
+            var ranBefore = previous is not null || AppSettings.LastUpdateCheckUtc is not null;
+
             // The check runs in the background; the window is never delayed.
             _ = Updates.CheckOnStartupAsync();
-            if (!AppSettings.ShowWelcome)
-                return;
-            var welcome = new WelcomeDialog();
-            await Dialogs.ShowAsync(welcome);
-            if (welcome.DontShowAgain)
-                AppSettings.ShowWelcome = false;
+
+            // Recorded before any dialog opens, so closing the window over one
+            // cannot make the next launch report an update that did not happen.
+            var current = AppVersion.Current;
+            AppSettings.LastRunVersion = current.ToString(3);
+            if (PostUpdateNotes(ranBefore, previous, current) is { } notes)
+                await UpdatePrompts.ShowInstalledNotesAsync(Dialogs, current, notes);
+            else if (AppSettings.ShowWelcome)
+            {
+                var welcome = new WelcomeDialog();
+                await Dialogs.ShowAsync(welcome);
+                if (welcome.DontShowAgain)
+                    AppSettings.ShowWelcome = false;
+            }
         };
     }
 
@@ -218,7 +230,7 @@ public sealed partial class MainWindow : Window
     {
         _availableRelease = release;
         UpdateBar.Title = $"Refreshify {release.Version.ToString(3)} is available";
-        UpdateBar.Message = $"You are running Refreshify {Updates.CurrentVersion.ToString(3)}.";
+        UpdateBar.Message = $"You have Refreshify {Updates.CurrentVersion.ToString(3)}.";
         UpdateBar.IsOpen = true;
         RefreshUpdateActions();
     }
@@ -232,7 +244,51 @@ public sealed partial class MainWindow : Window
     private async void OnUpdateNotesClick(object sender, RoutedEventArgs e)
     {
         if (_availableRelease is { } release)
-            await UpdatePrompts.ShowReleaseNotesAsync(Dialogs, release);
+        {
+            // The same condition that enables the bar's Update button, so the dialog
+            // can offer the update only when the button would.
+            if (await UpdatePrompts.ShowReleaseNotesAsync(Dialogs, release, !Runs.IsBusy && _updateDownload is null))
+                await DownloadUpdateAsync(release);
+        }
+    }
+
+    /// <summary>
+    /// The notes to show after an update: the section for
+    /// <paramref name="current"/> in the embedded CHANGELOG, when this launch
+    /// follows an update from another version. Null when nothing should be shown.
+    /// </summary>
+    private static ReleaseNotes? PostUpdateNotes(bool ranBefore, string? previous, Version current)
+    {
+        var notes = VersionNotes(current);
+        if (notes is null)
+            return null;
+#if DEBUG
+        // Forces the notes for the real version to be shown, since the test
+        // version override changes only what the check compares against.
+        if (Environment.GetEnvironmentVariable("REFRESHIFY_SHOW_UPDATED_NOTES") == "1")
+            return notes;
+#endif
+        if (!ranBefore)
+            return null;
+        if (previous is null)
+            return notes;
+        return Version.TryParse(previous, out var parsed) && parsed >= current ? null : notes;
+    }
+
+    /// <summary>The current version's section of the embedded CHANGELOG, when it has items.</summary>
+    private static ReleaseNotes? VersionNotes(Version version)
+    {
+        string changelog;
+        using (var stream = typeof(MainWindow).Assembly.GetManifestResourceStream("CHANGELOG.md"))
+        {
+            if (stream is null)
+                return null;
+            using var reader = new StreamReader(stream);
+            changelog = reader.ReadToEnd();
+        }
+
+        var notes = ReleaseNotes.FromChangelog(changelog, version);
+        return notes is null || notes.IsEmpty ? null : notes;
     }
 
     private async void OnUpdateInstallClick(object sender, RoutedEventArgs e)

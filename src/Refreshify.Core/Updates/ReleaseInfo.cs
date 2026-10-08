@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -18,7 +19,8 @@ public sealed record ReleaseInfo(
     string? InstallerName,
     string? InstallerUrl,
     string? SidecarName,
-    string? SidecarUrl);
+    string? SidecarUrl,
+    DateTimeOffset? PublishedAt);
 
 /// <summary>Reads the release JSON. Internal: the checker owns the network.</summary>
 internal static class ReleaseReader
@@ -88,9 +90,16 @@ internal static class ReleaseReader
             installerUrl is null ? null : installerName,
             installerUrl,
             sidecarName,
-            sidecarUrl);
+            sidecarUrl,
+            ParsePublishedAt(dto.PublishedAt));
         return true;
     }
+
+    /// <summary>GitHub's <c>published_at</c>, or <see langword="null"/> when it is missing or unreadable.</summary>
+    private static DateTimeOffset? ParsePublishedAt(string? publishedAt) =>
+        DateTimeOffset.TryParse(publishedAt, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed)
+            ? parsed
+            : null;
 
     /// <summary>
     /// Only <c>https</c> URLs on <c>github.com</c> under this repository's
@@ -110,6 +119,7 @@ internal static class ReleaseReader
         [property: JsonPropertyName("tag_name")] string? TagName,
         [property: JsonPropertyName("body")] string? Body,
         [property: JsonPropertyName("html_url")] string? HtmlUrl,
+        [property: JsonPropertyName("published_at")] string? PublishedAt,
         [property: JsonPropertyName("assets")] AssetDto[]? Assets);
 
     private sealed record AssetDto(

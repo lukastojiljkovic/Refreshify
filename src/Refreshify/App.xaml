@@ -63,6 +63,17 @@
                 <Setter Property="Margin" Value="1,28,0,6" />
             </Style>
 
+            <!-- Release notes. The secondary brush has to come from a setter to follow the dialog's theme. -->
+            <Style x:Key="ReleaseNotesBulletStyle" TargetType="TextBlock">
+                <Setter Property="Margin" Value="2,0,10,0" />
+                <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+            </Style>
+
+            <Style x:Key="ReleaseNotesDateStyle" TargetType="TextBlock" BasedOn="{StaticResource CaptionTextBlockStyle}">
+                <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+                <Setter Property="Margin" Value="0,0,0,16" />
+            </Style>
+
             <Style TargetType="controls:SettingsCard">
                 <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
                 <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
