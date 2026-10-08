@@ -43,6 +43,11 @@
                 <NavigationViewItemSeparator />
                 <!-- The category pages go here, from CategoryInfo.All. -->
                 <NavigationViewItemSeparator x:Name="CategoriesEnd" />
+                <NavigationViewItem Content="Disk space" Tag="Space">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xEDA2;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem Content="History" Tag="History">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE81C;" />

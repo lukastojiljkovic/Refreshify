@@ -182,6 +182,7 @@ public sealed partial class MainWindow : Window
         {
             "Home" => new HomeView(this),
             "Run" => new RunView(this, Runs.Current!),
+            "Space" => new DiskSpaceView(this),
             "History" => new HistoryView(this),
             ToolCategory category => new CategoryView(this, CategoryInfo.Get(category)),
             _ => null,
